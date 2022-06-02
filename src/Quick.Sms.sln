@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32526.322
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quick.Sms", "..\Quick.Sms\Quick.Sms.csproj", "{E93E3D9A-B820-4417-AE19-BAA5C1E36482}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmsTool", "..\SmsTool\SmsTool.csproj", "{9E5DF3E6-F12E-49AC-A8CD-6D71CB6BE1D0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E93E3D9A-B820-4417-AE19-BAA5C1E36482}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E93E3D9A-B820-4417-AE19-BAA5C1E36482}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E93E3D9A-B820-4417-AE19-BAA5C1E36482}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E93E3D9A-B820-4417-AE19-BAA5C1E36482}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E5DF3E6-F12E-49AC-A8CD-6D71CB6BE1D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E5DF3E6-F12E-49AC-A8CD-6D71CB6BE1D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E5DF3E6-F12E-49AC-A8CD-6D71CB6BE1D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E5DF3E6-F12E-49AC-A8CD-6D71CB6BE1D0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EF10BC43-FDB9-4DFD-9187-62CCE2C273E3}
+	EndGlobalSection
+EndGlobal
