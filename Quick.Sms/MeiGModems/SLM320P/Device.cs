@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace Quick.Sms.Device.SLM320P
+namespace Quick.Sms.MeiGModems.SLM320P
 {
     public class Device : AbstractSerialPortModem
     {
