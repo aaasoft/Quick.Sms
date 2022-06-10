@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<RollForward>Major</RollForward>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Quick.Blazor.Bootstrap" Version="1.0.23" />
+		<PackageReference Include="YiQiDong.Agent" Version="2.2.13" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Quick.Sms\Quick.Sms.csproj" />
+	</ItemGroup>
+</Project>
