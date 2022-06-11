@@ -66,11 +66,17 @@ namespace Quick.Sms.Test
                     try
                     {
                         app.Start();
-                        AgentContext.Instance.Client.SendCommand(new YiQiDong.Protocol.V1.QpCommands.AddReverseProxyRule.Request()
+                        AgentContext.Instance.Client?.SendCommand(new YiQiDong.Protocol.V1.QpCommands.AddReverseProxyRule.Request()
                         {
                             Name = "访问",
                             Path = "/",
                             Url = app.Urls.First()
+                        })?.ContinueWith(task =>
+                        {
+                            if (task.IsFaulted)
+                                AgentContext.Instance.LogWarn($"注册反向代理规则失败，原因：{ExceptionUtils.GetExceptionString(task.Exception.InnerException)}");
+                            else
+                                AgentContext.Instance.LogInfo($"注册反向代理规则成功");
                         });
                         AgentContext.Instance.LogInfo($"Web服务启动完成，地址：{string.Join(",", app.Urls)}");
                         break;
