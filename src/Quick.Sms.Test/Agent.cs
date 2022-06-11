@@ -74,7 +74,7 @@ namespace Quick.Sms.Test
                         })?.ContinueWith(task =>
                         {
                             if (task.IsFaulted)
-                                AgentContext.Instance.LogWarn($"注册反向代理规则失败，原因：{ExceptionUtils.GetExceptionString(task.Exception.InnerException)}");
+                                AgentContext.Instance.LogWarn($"注册反向代理规则失败，原因：{ExceptionUtils.GetExceptionMessage(task.Exception.InnerException)}");
                             else
                                 AgentContext.Instance.LogInfo($"注册反向代理规则成功");
                         });
