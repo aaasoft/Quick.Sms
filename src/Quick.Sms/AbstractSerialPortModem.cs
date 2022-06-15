@@ -96,26 +96,29 @@ namespace Quick.Sms
                     var operaterName = strs[2];
                     operaterName = operaterName.Replace("\"", "");
                     sb.Append(operaterName);
-                    string act = strs[3];
-                    switch (act)
+                    if (strs.Length > 3)
                     {
-                        case "0":
-                            act = "GSM";
-                            break;
-                        case "1":
-                            act = "GSM Compact";
-                            break;
-                        case "2":
-                            act = "UTRAN";
-                            break;
-                        case "7":
-                            act = "EUTRAN";
-                            break;
-                        case "8":
-                            act = "CDMA/HDR";
-                            break;
+                        string act = strs[3];
+                        switch (act)
+                        {
+                            case "0":
+                                act = "GSM";
+                                break;
+                            case "1":
+                                act = "GSM Compact";
+                                break;
+                            case "2":
+                                act = "UTRAN";
+                                break;
+                            case "7":
+                                act = "EUTRAN";
+                                break;
+                            case "8":
+                                act = "CDMA/HDR";
+                                break;
+                        }
+                        sb.Append(",接入网:" + act);
                     }
-                    sb.Append(",接入网:" + act);
                     return sb.ToString();
                 }
             };
@@ -409,7 +412,7 @@ namespace Quick.Sms
                 if (stopwatch.ElapsedMilliseconds > timeout)
                 {
                     stopwatch.Stop();
-                    throw new TimeoutException();
+                    throw new TimeoutException("读取数据超时");
                 }
                 //等待0.1秒再试
                 Thread.Sleep(100);

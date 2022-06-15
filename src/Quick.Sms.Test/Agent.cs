@@ -19,6 +19,12 @@ namespace Quick.Sms.Test
     {
         private CancellationTokenSource cts;
         private WebApplication app;
+        
+        public Agent()
+        {
+            Quick.Blazor.Bootstrap.ModalAlert.TextOk = Quick.Blazor.Bootstrap.ModalPrompt.TextOk = "确定";
+            Quick.Blazor.Bootstrap.ModalAlert.TextCancel = Quick.Blazor.Bootstrap.ModalPrompt.TextCancel = "取消";
+        }
 
         public override void Start()
         {
