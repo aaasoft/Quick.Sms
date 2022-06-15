@@ -247,10 +247,7 @@ els[i].scrollTop = els[i].scrollHeight;
                     device.ExecuteCommand(commandText);
                     break;
                 case CommandType.Hex:
-                    if (!(device is AbstractSerialPortModem modem))
-                        return;
-                    var bytes = commandText.ToHex();
-                    modem.Write(bytes);
+                    device.ExecuteCommand(commandText.ToHex());
                     break;
             }
         }

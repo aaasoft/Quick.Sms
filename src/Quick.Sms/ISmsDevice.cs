@@ -50,6 +50,11 @@ namespace Quick.Sms
         /// <summary>
         /// 执行命令
         /// </summary>
+        /// <param name="bytesToWrite"></param>
+        void ExecuteCommand(byte[] bytesToWrite);
+        /// <summary>
+        /// 执行命令
+        /// </summary>
         /// <param name="command"></param>
         void ExecuteCommand(string command);
         /// <summary>

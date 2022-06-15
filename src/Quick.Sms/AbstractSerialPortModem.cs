@@ -568,6 +568,11 @@ namespace Quick.Sms
             WriteCommand("ATH");
         }
 
+        public void ExecuteCommand(byte[] bytesToWrite)
+        {
+            Write(bytesToWrite);
+        }
+
         public void ExecuteCommand(string command)
         {
             WriteLine(command);
