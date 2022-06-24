@@ -16,8 +16,7 @@ namespace Quick.Sms.Test.Pages
         private ModalLoading modalLoading;
         private ModalPrompt modalPrompt;
         private ModalAlert modalAlert;
-        [Inject]
-        public IJSRuntime JSRuntime { get; set; }
+        private Quick.Blazor.Bootstrap.Admin.LogViewControl logViewControl;
 
         private bool isOpen = false;
         private int baudRate = 115200;
@@ -86,41 +85,9 @@ namespace Quick.Sms.Test.Pages
             }
         }
 
-        private Queue<string> logQueue = new Queue<string>();
-        private string logs = null;
-
-        private void clearLog()
-        {
-            lock (logQueue)
-                logQueue.Clear();
-            logs = null;
-        }
         private void pushLog(string log)
         {
-            lock (logQueue)
-            {
-                //去掉结尾的\r字符
-                while (log.EndsWith("\r"))
-                    log = log.Substring(0, log.Length - 1);
-                logQueue.Enqueue($"{DateTime.Now.ToString("HH:mm:ss.ffff")} {log}");
-                //只显示最近1000行
-                while (logQueue.Count > 1000)
-                    logQueue.Dequeue();
-                logs = string.Join(Environment.NewLine, logQueue);
-            }
-            InvokeAsync(StateHasChanged);
-            scrollToBottom();
-        }
-
-        private void scrollToBottom()
-        {
-            JSRuntime.InvokeVoidAsync("eval",
-    @"this.setTimeout(function () {
-var els = document.getElementsByName('console');
-for(var i=0;i<els.length;i++)
-els[i].scrollTop = els[i].scrollHeight;
-},100);"
-                );
+            logViewControl?.AddLine($"{DateTime.Now.ToString("HH:mm:ss.ffff")} {log}");
         }
 
         private async Task OpenSerialPort(string deviceTypeId, string portName, int baudRate)
@@ -144,7 +111,7 @@ els[i].scrollTop = els[i].scrollHeight;
         {
             try { device?.Close(); } catch { }
             isOpen = false;
-            clearLog();
+            logViewControl?.Clear();
         }
 
         private async Task btnSend_Click()
@@ -230,7 +197,7 @@ els[i].scrollTop = els[i].scrollHeight;
         private async Task ReadAllStatus()
         {
             foreach (var status in statusDict.Keys)
-                await ReadStatus(status);
+                await ReadStatus(status, false);
             modalLoading.Close();
         }
 
