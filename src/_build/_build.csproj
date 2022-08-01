@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Quick.Build" Version="1.0.6" />
-    <PackageReference Include="SharpCompress" Version="0.31.0" />
+    <PackageReference Include="SharpCompress" Version="0.32.2" />
   </ItemGroup>
 
 </Project>

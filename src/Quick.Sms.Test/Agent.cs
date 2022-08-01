@@ -74,9 +74,16 @@ namespace Quick.Sms.Test
                         app.Start();
                         AgentContext.Instance.Client?.SendCommand(new YiQiDong.Protocol.V1.QpCommands.AddReverseProxyRule.Request()
                         {
-                            Name = "访问",
                             Path = "/",
-                            Url = app.Urls.First()
+                            Url = app.Urls.First(),
+                            Links = new[]
+                            {
+                                new ReverseProxyRuleLinkInfo()
+                                {
+                                    Name = "访问",
+                                    Url=""
+                                }
+                            }
                         })?.ContinueWith(task =>
                         {
                             if (task.IsFaulted)
