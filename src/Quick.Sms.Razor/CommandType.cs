@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Quick.Sms.Test
+namespace Quick.Sms.Razor
 {
     public enum CommandType
     {

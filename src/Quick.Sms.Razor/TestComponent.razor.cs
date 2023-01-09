@@ -1,18 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.JSInterop;
-using Newtonsoft.Json;
+using Quick.Blazor.Bootstrap.Admin.Utils;
 using Quick.Blazor.Bootstrap;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using YiQiDong.Core.Utils;
 
-namespace Quick.Sms.Test.Pages
+namespace Quick.Sms.Razor
 {
-    public partial class Index : ComponentBase, IDisposable
-    {        
+    public partial class TestComponent : ComponentBase, IDisposable
+    {
         private ModalLoading modalLoading;
         private ModalPrompt modalPrompt;
         private ModalAlert modalAlert;
@@ -20,16 +13,16 @@ namespace Quick.Sms.Test.Pages
 
         private bool isOpen = false;
         private int baudRate = 115200;
-        private string deviceType = "";        
+        private string deviceType = "";
         private string portName;
 
         private ISmsDevice device;
         private string sendTo;
-        private string sendContent= "{device}({portName},{baudRate}),{time}";
+        private string sendContent = "{device}({portName},{baudRate}),{time}";
         private CommandType commandType;
-        private Dictionary<SmsDeviceStatus,string> statusDict;
+        private Dictionary<SmsDeviceStatus, string> statusDict;
         private string commandText;
-        
+
         private async void BtnOpen_Click()
         {
             if (string.IsNullOrEmpty(portName))
@@ -63,7 +56,7 @@ namespace Quick.Sms.Test.Pages
         {
             try
             {
-                if(string.IsNullOrEmpty(portName))
+                if (string.IsNullOrEmpty(portName))
                 {
                     modalAlert.Show("错误", $"请先选择串口!");
                     return;
@@ -131,7 +124,7 @@ namespace Quick.Sms.Test.Pages
             content = content.Replace("{baudRate}", baudRate.ToString());
             content = content.Replace("{device}", device.Name);
             content = content.Replace("{time}", DateTime.Now.ToString());
-            content = content.Replace("{guid}" ,Guid.NewGuid().ToString("N"));
+            content = content.Replace("{guid}", Guid.NewGuid().ToString("N"));
 
             try
             {

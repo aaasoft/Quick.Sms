@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Quick.Sms.Test
+namespace Quick.Sms.Razor
 {
     public static class GeneralExtended
     {

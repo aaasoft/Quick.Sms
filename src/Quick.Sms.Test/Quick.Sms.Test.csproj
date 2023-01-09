@@ -12,6 +12,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Quick.Sms\Quick.Sms.csproj" />
+	  <ProjectReference Include="..\Quick.Sms.Razor\Quick.Sms.Razor.csproj" />
 	</ItemGroup>
 </Project>

@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quick.Sms", "Quick.Sms\Quic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "_build\_build.csproj", "{F1342CA8-D8DF-4571-8238-7D0B4EE33523}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quick.Sms.WinForm", "Quick.Sms.WinForm\Quick.Sms.WinForm.csproj", "{A5C9B941-F647-4E5F-B96F-1DF81825570C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quick.Sms.Razor", "Quick.Sms.Razor\Quick.Sms.Razor.csproj", "{04306E69-033E-4DF1-B851-229829B74B62}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{F1342CA8-D8DF-4571-8238-7D0B4EE33523}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1342CA8-D8DF-4571-8238-7D0B4EE33523}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1342CA8-D8DF-4571-8238-7D0B4EE33523}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5C9B941-F647-4E5F-B96F-1DF81825570C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5C9B941-F647-4E5F-B96F-1DF81825570C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5C9B941-F647-4E5F-B96F-1DF81825570C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5C9B941-F647-4E5F-B96F-1DF81825570C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04306E69-033E-4DF1-B851-229829B74B62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04306E69-033E-4DF1-B851-229829B74B62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04306E69-033E-4DF1-B851-229829B74B62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04306E69-033E-4DF1-B851-229829B74B62}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
