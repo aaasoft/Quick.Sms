@@ -10,7 +10,6 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>短信工具</title>
     <link rel="stylesheet" href="_content/Quick.Sms.Razor/css/bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="_content/Quick.Sms.Razor/css/open-iconic/font/css/open-iconic-bootstrap.min.css" />
     <link href="css/site.css" rel="stylesheet" />
@@ -30,5 +29,10 @@
     </div>
 
     <script src="_framework/blazor.server.js"></script>
+    <script>
+        window.setTitle = function (title) {
+            document.title = title;
+        }
+    </script>
 </body>
 </html>
