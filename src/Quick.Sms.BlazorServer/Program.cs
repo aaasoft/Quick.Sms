@@ -1,4 +1,4 @@
-using Quick.Sms.Test;
+using Quick.Sms.BlazorServer;
 using YiQiDong.Agent;
 
 //初始化容器信息
