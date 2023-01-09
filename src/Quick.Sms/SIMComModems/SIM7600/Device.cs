@@ -118,9 +118,14 @@ namespace Quick.Sms.SIMComModems.SIM7600
             if (!WriteCommand(writeCommand, null, out rep))
                 throw new IOException($"发送指令[{writeCommand}]时，响应：{rep}");
 
-            writeCommand = "AT+CSMP=17,167,2,25";
-            if (!WriteCommand(writeCommand, null, out rep))
-                throw new IOException($"发送指令[{writeCommand}]时，响应：{rep}");
+            //检测是否支持AT+CSMP指令，则设置文本模式。(CDMA/EVDO模式不支持AT+CSMP指令)
+            writeCommand = "AT+CSMP=?";
+            if (WriteCommand(writeCommand, null, out rep))
+            {
+                writeCommand = "AT+CSMP=17,167,2,25";
+                if (!WriteCommand(writeCommand, null, out rep))
+                    throw new IOException($"发送指令[{writeCommand}]时，响应：{rep}");
+            }
 
             writeCommand = "AT+CSCS=\"UCS2\"";
             if (!WriteCommand(writeCommand, null, out rep))
