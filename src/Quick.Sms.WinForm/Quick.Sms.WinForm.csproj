@@ -8,7 +8,7 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ApplicationIcon>Logo.ico</ApplicationIcon>
-		<Version>1.0.2023.109</Version>
+		<Version>3.7.2023.109</Version>
 		<Title>短信工具</Title>
 		<Product>短信工具</Product>
 	</PropertyGroup>
