@@ -11,7 +11,7 @@ namespace Quick.Sms.BlazorServer.Pages
             if (imageInfo == null)
                 await setTitle("短信工具 Debug version");
             else
-                await setTitle($"{imageInfo.Name} {imageInfo.Version}");
+                await setTitle($"{imageInfo.Name} v{imageInfo.Version}");
         }
 
         private async Task setTitle(string title)
