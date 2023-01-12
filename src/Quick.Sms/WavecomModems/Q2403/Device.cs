@@ -66,6 +66,18 @@ namespace Quick.Sms.WavecomModems.Q2403
             return result.ToString();
         }
 
+        public override void InitModem()
+        {
+            base.InitModem();
+
+            string rep;
+
+            if (!WriteCommand("AT+CMGF=0", null, out rep))
+                throw new IOException($"发送指令[AT+CMGF=0]时，返回：" + rep);
+
+            smsCenterNumber = Status_CSCA.Read();
+        }
+
         //短信中心号码
         private string smsCenterNumber;
 
@@ -108,9 +120,6 @@ namespace Quick.Sms.WavecomModems.Q2403
             sendContent += strSwitch;
 
             string rep;
-
-            if (!WriteCommand("AT+CMGF=0", null, out rep))
-                throw new IOException($"发送指令[AT+CMGF=0]时，返回：" + rep);
 
             WriteLine($"AT+CMGS={nSendLen}");
             rep = ReadLine();

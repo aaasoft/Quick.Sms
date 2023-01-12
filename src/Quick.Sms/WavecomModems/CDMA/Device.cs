@@ -54,15 +54,22 @@ namespace Quick.Sms.WavecomModems.CDMA
                 }
             }).ToArray();
 
+        public override void InitModem()
+        {
+            base.InitModem();
+
+            string rep;
+            if (!WriteCommand("AT+WSCL=6,4", null, out rep))
+                throw new IOException($"发送指令[{"AT+WSCL=6,4"}]时，响应：{rep}");
+        }
+
         protected override void InternalSend(string sendTo, string content)
         {
             //清除缓冲区
             ClearBuffer();
 
             string rep;
-            if (!WriteCommand("AT+WSCL=6,4", null, out rep))
-                throw new IOException($"发送指令[{"AT+WSCL=6,4"}]时，响应：{rep}");
-
+            
             //发送内容
             var contentBuffer = EncodeContent(content);
             //电话号码与内容长度指令

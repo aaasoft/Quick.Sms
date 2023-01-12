@@ -24,14 +24,12 @@ namespace Quick.Sms.MeiGModems.SLM320P
 
         public override bool SliceLongText => false;
 
-        protected override void InternalSend(string sendTo, string content)
+        public override void InitModem()
         {
-            //清除缓冲区
-            ClearBuffer();
+            base.InitModem();
 
-            String rep;
-            String writeCommand;
-
+            string rep;
+            string writeCommand;
             writeCommand = "AT+SETVOLTE=1";
             if (!WriteCommand(writeCommand, null, out rep))
                 throw new IOException($"发送指令[{writeCommand}]时，响应：{rep}");
@@ -43,6 +41,15 @@ namespace Quick.Sms.MeiGModems.SLM320P
             writeCommand = "AT+CMGF=0";
             if (!WriteCommand(writeCommand, null, out rep))
                 throw new IOException($"发送指令[{writeCommand}]时，响应：{rep}");
+        }
+
+        protected override void InternalSend(string sendTo, string content)
+        {
+            //清除缓冲区
+            ClearBuffer();
+
+            string rep;
+            string writeCommand;
 
             var groupId = GetPackageId();
             var contents = content.Split(60);

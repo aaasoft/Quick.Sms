@@ -35,16 +35,22 @@ namespace Quick.Sms.HuaweiModems.MC323
             new SmsDeviceStatus(){Name="基站信息",Read=()=>ExecuteCommand("AT^BSINFO","^BSINFO:") },
         }).ToArray();
 
-        protected override void InternalSend(string sendTo, string content)
+        public override void InitModem()
         {
-            //清除缓冲区
-            ClearBuffer();
+            base.InitModem();
 
             string rep;
             if (!WriteCommand("at^HSMSSS=0,0,6,0", null, out rep))
                 throw new IOException("发送指令[at^HSMSSS=0,0,6,0]，返回：" + rep);
             if (!WriteCommand("AT+CMGF=1", null, out rep))
                 throw new IOException("发送指令[AT+CMGF=1]，返回：" + rep);
+        }
+        protected override void InternalSend(string sendTo, string content)
+        {
+            //清除缓冲区
+            ClearBuffer();
+
+            string rep;
 
             WriteLine($"AT^HCMGS=\"{sendTo}\"");
             rep = ReadLine();

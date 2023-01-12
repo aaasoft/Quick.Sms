@@ -21,13 +21,12 @@ namespace Quick.Sms.SiemensModems.MC52i
 
         public override string Name => "Siemens_MC52i系列芯片";
 
-        protected override void InternalSend(string sendTo, string content)
+        public override void InitModem()
         {
-            //清除缓冲区
-            ClearBuffer();
+            base.InitModem();
 
-            String rep;
-            String writeCommand = "AT+CMGF=1";
+            string rep;
+            string writeCommand = "AT+CMGF=1";
             if (!WriteCommand(writeCommand, null, out rep))
                 throw new IOException($"发送指令[{writeCommand}]时，响应：{rep}");
 
@@ -38,6 +37,15 @@ namespace Quick.Sms.SiemensModems.MC52i
             writeCommand = "AT+CSMP=17,167,0,8";
             if (!WriteCommand(writeCommand, null, out rep))
                 throw new IOException($"发送指令[{writeCommand}]时，响应：{rep}");
+        }
+
+        protected override void InternalSend(string sendTo, string content)
+        {
+            //清除缓冲区
+            ClearBuffer();
+
+            string rep;
+            string writeCommand;
 
             var hexByteStr = BitConverter.ToString(Encoding.BigEndianUnicode.GetBytes(sendTo)).Replace("-", String.Empty);
             writeCommand = $"AT+CMGS=\"{hexByteStr}\"";
