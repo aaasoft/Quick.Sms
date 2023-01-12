@@ -56,9 +56,6 @@ namespace Quick.Sms.WavecomModems.CDMA
 
         protected override void InternalSend(string sendTo, string content)
         {
-            //确保短信猫工作正常
-            EnsureModem();
-
             //清除缓冲区
             ClearBuffer();
 

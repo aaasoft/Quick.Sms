@@ -109,8 +109,10 @@ namespace Quick.Sms.SIMComModems.SIM7600
             };
         }
 
-        protected override void EnsureModem_Init()
+        public override void InitModem()
         {
+            base.InitModem();
+
             String rep;
             String writeCommand;
 
@@ -134,9 +136,6 @@ namespace Quick.Sms.SIMComModems.SIM7600
 
         protected override void InternalSend(string sendTo, string content)
         {
-            //确保短信猫工作正常
-            EnsureModem();
-
             //清除缓冲区
             ClearBuffer();
 

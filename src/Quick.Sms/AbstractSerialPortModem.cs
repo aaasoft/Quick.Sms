@@ -280,12 +280,7 @@ namespace Quick.Sms
             return rep == "ERROR";
         }
 
-        /// <summary>
-        /// EnsureModem成功后初始化操作
-        /// </summary>
-        protected virtual void EnsureModem_Init() { }
-
-        public virtual void EnsureModem()
+        public virtual void InitModem()
         {
             //清除缓冲区
             ClearBuffer();
@@ -308,8 +303,6 @@ namespace Quick.Sms
                 //如果没有关闭回显，则关闭回显
                 WriteCommand("ATE0");
             }
-            //其他初始化操作
-            EnsureModem_Init();
             Thread.Sleep(100);
             ClearBuffer();
         }
@@ -336,7 +329,7 @@ namespace Quick.Sms
             }
             ClearBuffer();
             //确保短信猫工作
-            EnsureModem();
+            InitModem();
         }
 
         private void addReadLines(string[] lines)
