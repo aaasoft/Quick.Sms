@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quick.Sms.Razor", "Quick.Sm
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quick.Sms.BlazorServer", "Quick.Sms.BlazorServer\Quick.Sms.BlazorServer.csproj", "{A5B5AEDD-7E63-4F82-9398-D058C0410EEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quick.Sms.CMCC.CloudMAS", "Quick.Sms.CMCC.CloudMAS\Quick.Sms.CMCC.CloudMAS.csproj", "{9D259186-61ED-4CA1-9B35-56621541532D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quick.Sms.CMCC.CloudMAS", "Quick.Sms.CMCC.CloudMAS\Quick.Sms.CMCC.CloudMAS.csproj", "{9D259186-61ED-4CA1-9B35-56621541532D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quick.Sms.Avalonia", "Quick.Sms.Avalonia\Quick.Sms.Avalonia.csproj", "{030C1B44-D113-446B-9C30-261B28BE4A33}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{9D259186-61ED-4CA1-9B35-56621541532D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D259186-61ED-4CA1-9B35-56621541532D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D259186-61ED-4CA1-9B35-56621541532D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{030C1B44-D113-446B-9C30-261B28BE4A33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{030C1B44-D113-446B-9C30-261B28BE4A33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{030C1B44-D113-446B-9C30-261B28BE4A33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{030C1B44-D113-446B-9C30-261B28BE4A33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
