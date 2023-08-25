@@ -31,6 +31,9 @@
 					<Style Selector="Label>AccessText">
 						<Setter Property="HorizontalAlignment" Value="Right"/>
 					</Style>
+					<Style Selector="Button">
+						<Setter Property="Theme" Value="{DynamicResource SolidButton}" />
+					</Style>
 				</Grid.Styles>
 				<Border Classes="card" Grid.Row="0" Grid.Column="0">
 					<HeaderedContentControl Header="设备" Width="NaN" Height="NaN" Theme="{DynamicResource GroupBox}">
@@ -41,7 +44,7 @@
 									<ComboBox Grid.Column="1" HorizontalAlignment="Stretch"
 											  ItemsSource="{Binding PortNames}"
 											  SelectedItem="{Binding PortName}"></ComboBox>
-									<Button Grid.Column="2" Classes="Tertiary" Theme="{DynamicResource SolidButton}" Command="{Binding OpenCommand}">打开</Button>
+									<Button Grid.Column="2" Classes="Tertiary" Command="{Binding OpenCommand}">打开</Button>
 								</Grid>
 							</Border>
 							<Border Classes="row">
@@ -63,13 +66,13 @@
 											</DataTemplate>
 										</ComboBox.ItemTemplate>
 									</ComboBox>
-									<Button Grid.Column="2" Classes="Tertiary" Theme="{DynamicResource SolidButton}">智能识别</Button>
+									<Button Grid.Column="2" Classes="Tertiary" Command="{Binding ScanCommand}">智能识别</Button>
 								</Grid>
 							</Border>
 						</StackPanel>
 					</HeaderedContentControl>
 				</Border>
-				<Border Classes="card" Grid.Row="0" Grid.Column="1">
+				<Border Classes="card" Grid.Row="0" Grid.Column="1" IsEnabled="{Binding IsOpen}">
 					<HeaderedContentControl Header="短信" Width="NaN" Height="NaN" Theme="{DynamicResource GroupBox}">
 						<StackPanel Orientation="Vertical">
 							<Border Classes="row">
@@ -84,26 +87,47 @@
 									<TextBox Grid.Column="1" Text="{Binding SendContent}"></TextBox>
 								</Grid>
 							</Border>
-							<Button Classes="Tertiary" Theme="{DynamicResource SolidButton}">发送</Button>
+							<Button Classes="Tertiary">发送</Button>
 						</StackPanel>
 					</HeaderedContentControl>
 				</Border>
-				<Border Classes="card" Grid.Row="1" Grid.Column="0">
+				<Border Classes="card" Grid.Row="1" Grid.Column="0" IsEnabled="{Binding IsOpen}">
 					<HeaderedContentControl Header="状态" Width="NaN" Height="NaN" Theme="{DynamicResource GroupBox}">
-						<StackPanel Orientation="Vertical">
-							<Button Classes="Tertiary" Theme="{DynamicResource SolidButton}">全部刷新</Button>
-
-						</StackPanel>
+						<ScrollViewer>
+							<StackPanel Orientation="Vertical">
+								<Button Classes="Tertiary">全部刷新</Button>
+								<ItemsControl ItemsSource="{Binding StatusDict}">
+									<!--
+								<ItemsControl.DataTemplates>
+									<DataTemplate>
+										<Border Classes="row">
+											<Grid ColumnDefinitions="Auto,*,Auto">
+												<Label Grid.Column="0" Classes="Large">
+													<AccessText Text="{Binding Key.Name}"></AccessText>
+												</Label>
+												<TextBox Grid.Column="1" Text="{Binding Value}"></TextBox>
+												<StackPanel Grid.Column="2" Orientation="Horizontal">
+													<Button Classes="Tertiary" Theme="{DynamicResource SolidButton}">读</Button>
+													<Button Classes="Tertiary" Theme="{DynamicResource SolidButton}">写</Button>
+												</StackPanel>
+											</Grid>
+										</Border>
+									</DataTemplate>
+								</ItemsControl.DataTemplates>
+								-->
+								</ItemsControl>
+							</StackPanel>
+						</ScrollViewer>
 					</HeaderedContentControl>
 				</Border>
-				<Border Classes="card" Grid.Row="1" Grid.Column="1">
+				<Border Classes="card" Grid.Row="1" Grid.Column="1" IsEnabled="{Binding IsOpen}">
 					<HeaderedContentControl Header="终端" Width="NaN" Height="NaN" Theme="{DynamicResource GroupBox}">
 						<Grid RowDefinitions="*,Auto">
 							<TextBox Grid.Row="0" VerticalContentAlignment="Top" AcceptsReturn="True" Text="{Binding CommandText}"></TextBox>
 							<Border Grid.Row="1" Classes="row">
 								<Grid ColumnDefinitions="*,Auto">
 									<TextBox Grid.Row="0"></TextBox>
-									<Button Grid.Column="1" Classes="Tertiary" Theme="{DynamicResource SolidButton}">发送</Button>
+									<Button Grid.Column="1" Classes="Tertiary">发送</Button>
 								</Grid>
 							</Border>
 						</Grid>
