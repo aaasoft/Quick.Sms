@@ -6,7 +6,7 @@
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
 		<ApplicationIcon>../../resource/Logo.ico</ApplicationIcon>
-		<Version>3.7.2023.112</Version>
+		<Version>3.7.2023.825</Version>
 		<Title>短信工具</Title>
 		<Product>短信工具</Product>
 	</PropertyGroup>
