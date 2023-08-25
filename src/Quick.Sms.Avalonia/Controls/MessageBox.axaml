@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:vm="using:Quick.Sms.Avalonia.Controls"
+			 x:DataType="vm:MessageBoxViewModel"
+			 IsVisible="{Binding IsVisible}"
+             x:Class="Quick.Sms.Avalonia.Controls.MessageBox">
+	<Panel>
+		<Border Background="{DynamicResource SemiColorDisabledText}">
+		</Border>
+		<Grid ColumnDefinitions="*,Auto,*" RowDefinitions="*,Auto,*">
+			<HeaderedContentControl
+				Header="{Binding Title}"
+				Grid.Column="1" Grid.Row="1"
+				Width="NaN" Height="NaN"
+				MinWidth="400" MinHeight="200"
+				Background="{DynamicResource SemiColorBackground0}" Theme="{DynamicResource GroupBox}">
+				<Grid RowDefinitions="*,Auto">
+					<TextBlock TextWrapping="WrapWithOverflow" Text="{Binding Message}"></TextBlock>
+					<WrapPanel Grid.Row="1" HorizontalAlignment="Right">
+						<Button IsVisible="{Binding ButtonOkVisiable}" Command="{Binding OkCommand}" Classes="Tertiary" Theme="{DynamicResource SolidButton}">
+							<AccessText Text="{Binding ButtonOkText}"></AccessText>
+						</Button>
+					</WrapPanel>
+				</Grid>
+			</HeaderedContentControl>
+		</Grid>
+	</Panel>
+</UserControl>
