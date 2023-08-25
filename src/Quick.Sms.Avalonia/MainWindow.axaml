@@ -7,6 +7,7 @@
 		xmlns:quick_sms="using:Quick.Sms"
 		xmlns:controls="using:Quick.Sms.Avalonia.Controls"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+		x:Name="win"
 		x:DataType="vm:MainWindowViewModel"
         x:Class="Quick.Sms.Avalonia.MainWindow">
 	<Window.Resources>
@@ -14,7 +15,9 @@
 	</Window.Resources>
 	<ScrollViewer VerticalScrollBarVisibility="Auto">
 		<Panel>
-			<Grid ColumnDefinitions="*,*" RowDefinitions="Auto,*" IsEnabled="{Binding MessageBox.IsVisible,Converter={StaticResource booleanReverseConverter}}">
+			<Grid ColumnDefinitions="*,*" RowDefinitions="Auto,*"
+				  Height="{Binding #win.Height}"
+				  IsEnabled="{Binding MessageBox.IsVisible,Converter={StaticResource booleanReverseConverter}}">
 				<Grid.Styles>
 					<Style Selector="Border.card">
 						<Setter Property="Padding" Value="8"/>
@@ -42,22 +45,26 @@
 								<Grid ColumnDefinitions="Auto,*,Auto">
 									<Label Grid.Column="0" Classes="Large">串口</Label>
 									<ComboBox Grid.Column="1" HorizontalAlignment="Stretch"
+											  IsEnabled="{Binding IsOpen,Converter={StaticResource booleanReverseConverter}}"
 											  ItemsSource="{Binding PortNames}"
 											  SelectedItem="{Binding PortName}"></ComboBox>
-									<Button Grid.Column="2" Classes="Tertiary" Command="{Binding OpenCommand}">打开</Button>
+									<Button Grid.Column="2" Classes="Tertiary" Command="{Binding OpenCommand}" IsVisible="{Binding IsOpen,Converter={StaticResource booleanReverseConverter}}">打开</Button>
+									<Button Grid.Column="2" Classes="Tertiary" Command="{Binding CloseCommand}" IsVisible="{Binding IsOpen}">关闭</Button>
 								</Grid>
 							</Border>
 							<Border Classes="row">
 								<Grid ColumnDefinitions="Auto,*,Auto">
 									<Label Grid.Column="0" Classes="Large">波特率</Label>
 									<NumericUpDown Grid.Column="1" Minimum="0" FormatString="0"
-											Value="{Binding BaudRate}"></NumericUpDown>
+										IsEnabled="{Binding IsOpen,Converter={StaticResource booleanReverseConverter}}"
+										Value="{Binding BaudRate}"></NumericUpDown>
 								</Grid>
 							</Border>
 							<Border Classes="row">
 								<Grid ColumnDefinitions="Auto,*,Auto">
 									<Label Grid.Column="0" Classes="Large">类型</Label>
 									<ComboBox Grid.Column="1" HorizontalAlignment="Stretch"
+										IsEnabled="{Binding IsOpen,Converter={StaticResource booleanReverseConverter}}"
 										ItemsSource="{Binding DeviceTypeInfos}"
 										SelectedItem="{Binding DeviceType}">
 										<ComboBox.ItemTemplate>
@@ -66,7 +73,9 @@
 											</DataTemplate>
 										</ComboBox.ItemTemplate>
 									</ComboBox>
-									<Button Grid.Column="2" Classes="Tertiary" Command="{Binding ScanCommand}">智能识别</Button>
+									<Button Grid.Column="2" Classes="Tertiary"
+											IsEnabled="{Binding IsOpen,Converter={StaticResource booleanReverseConverter}}"
+											Command="{Binding ScanCommand}">智能识别</Button>
 								</Grid>
 							</Border>
 						</StackPanel>
@@ -87,7 +96,7 @@
 									<TextBox Grid.Column="1" Text="{Binding SendContent}"></TextBox>
 								</Grid>
 							</Border>
-							<Button Classes="Tertiary">发送</Button>
+							<Button Classes="Tertiary" Command="{Binding SendCommand}">发送</Button>
 						</StackPanel>
 					</HeaderedContentControl>
 				</Border>
@@ -121,11 +130,14 @@
 				<Border Classes="card" Grid.Row="1" Grid.Column="1" IsEnabled="{Binding IsOpen}">
 					<HeaderedContentControl Header="终端" Width="NaN" Height="NaN" Theme="{DynamicResource GroupBox}">
 						<Grid RowDefinitions="*,Auto">
-							<TextBox Grid.Row="0" VerticalContentAlignment="Top" AcceptsReturn="True" Text="{Binding CommandText}"></TextBox>
+							<TextBox x:Name="txtLogs"
+								Grid.Row="0" VerticalContentAlignment="Top"
+									 IsReadOnly="True" TextWrapping="Wrap"
+									 AcceptsReturn="True" Text="{Binding Logs}" />
 							<Border Grid.Row="1" Classes="row">
 								<Grid ColumnDefinitions="*,Auto">
-									<TextBox Grid.Row="0"></TextBox>
-									<Button Grid.Column="1" Classes="Tertiary">发送</Button>
+									<TextBox Grid.Row="0" Text="{Binding CommandText}" />
+									<Button Grid.Column="1" Classes="Tertiary" Command="{Binding SendATCommand}">发送</Button>
 								</Grid>
 							</Border>
 						</Grid>

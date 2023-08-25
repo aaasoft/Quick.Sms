@@ -1,6 +1,8 @@
-﻿using Quick.Sms.Avalonia.Controls;
+﻿using Avalonia.Media;
+using Quick.Sms.Avalonia.Controls;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reflection;
@@ -21,10 +23,15 @@ namespace Quick.Sms.Avalonia.ViewModels
         public string Title { get; set; }
         public string[] PortNames { get; set; }
         public SmsDeviceTypeInfo[] DeviceTypeInfos { get; set; }
+        public Queue<string> LogQueue { get; set; } = new Queue<string>();
+        public string Logs => string.Join(Environment.NewLine, LogQueue);
 
         public DelegateCommand OpenCommand { get; set; }
+        public DelegateCommand CloseCommand { get; set; }
         public DelegateCommand ScanCommand { get; set; }
+        public DelegateCommand SendCommand { get; set; }
         public DelegateCommand RefreshAllStatusCommand { get; set; }
+        public DelegateCommand SendATCommand { get; set; }
 
         private bool _IsOpen = false;
         /// <summary>
@@ -140,8 +147,18 @@ namespace Quick.Sms.Avalonia.ViewModels
             DeviceTypeInfos = SmsDeviceManager.Instnce.GetDeviceTypeInfos();
 
             OpenCommand = new DelegateCommand() { ExecuteCommand = executeCommand_OpenCommand, CanExecuteCommand = t => !string.IsNullOrEmpty(PortName) };
+            CloseCommand = new DelegateCommand() { ExecuteCommand = executeCommand_CloseCommand };
             ScanCommand = new DelegateCommand() { ExecuteCommand = executeCommand_ScanCommand, CanExecuteCommand = t => !string.IsNullOrEmpty(PortName) };
+            SendCommand = new DelegateCommand() { ExecuteCommand = executeCommand_SendCommand };
             RefreshAllStatusCommand = new DelegateCommand() { ExecuteCommand = executeCommand_RefreshAllStatusCommand };
+            SendATCommand = new DelegateCommand() { ExecuteCommand = executeCommand_SendATCommand };
+        }
+
+        private void pushLog(string log)
+        {
+            var newLine = $"{DateTime.Now.ToString("HH:mm:ss.ffff")} {log}";
+            LogQueue.Enqueue(newLine);
+            RaisePropertyChanged(nameof(Logs));
         }
 
         private async Task OpenSerialPort()
@@ -152,8 +169,8 @@ namespace Quick.Sms.Avalonia.ViewModels
                     PortName = PortName,
                     BaudRate = BaudRate
                 });
-            //device.LineSended += (sender, line) => pushLog("TX " + line);
-            //device.LineRecved += (sender, line) => pushLog("RX " + line);
+            device.LineSended += (sender, line) => pushLog("TX " + line);
+            device.LineRecved += (sender, line) => pushLog("RX " + line);
 
             await Task.Run(() => device.Open());
             StatusInfos = device.Status.Select(t => new SmsDeviceStatusViewModel(MessageBox)
@@ -168,7 +185,7 @@ namespace Quick.Sms.Avalonia.ViewModels
         {
             try { device?.Close(); } catch { }
             IsOpen = false;
-            //logViewControl?.Clear();
+            LogQueue.Clear();
         }
 
         private async void executeCommand_OpenCommand(object e)
@@ -197,6 +214,11 @@ namespace Quick.Sms.Avalonia.ViewModels
             }
         }
 
+        private void executeCommand_CloseCommand(object e)
+        {
+            CloseSerialPort();
+        }
+
         private async void executeCommand_ScanCommand(object e)
         {
             try
@@ -218,11 +240,52 @@ namespace Quick.Sms.Avalonia.ViewModels
             }
         }
 
+        private async void executeCommand_SendCommand(object e)
+        {
+            if (string.IsNullOrEmpty(SendTo))
+            {
+                MessageBox.Show("错误", $"请输入要发送到的号码!");
+                return;
+            }
+            if (string.IsNullOrEmpty(SendContent))
+            {
+                MessageBox.Show("错误", $"请输入短信内容!");
+                return;
+            }
+            var content = SendContent;
+            content = content.Replace("{portName}", PortName);
+            content = content.Replace("{baudRate}", BaudRate.ToString());
+            content = content.Replace("{device}", device.Name);
+            content = content.Replace("{time}", DateTime.Now.ToString());
+            content = content.Replace("{guid}", Guid.NewGuid().ToString("N"));
+
+            try
+            {
+                MessageBox.Loading("发送短信中", $"正在向[{SendTo}]发送短信...");
+                await Task.Run(() => device.Send(SendTo, content));
+                MessageBox.Show("成功", $"发送短信成功。");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("失败", $"发送短信失败，原因：{ex.Message}");
+            }
+        }
+
         private async void executeCommand_RefreshAllStatusCommand(object e)
         {
             foreach (var statusInfo in StatusInfos)
                 await statusInfo.ReadStatus(false);
             MessageBox.Close();
+        }
+
+        private void executeCommand_SendATCommand(object e)
+        {
+            if (string.IsNullOrEmpty(CommandText))
+            {
+                MessageBox.Show("错误", "请输入指令内容!");
+                return;
+            }
+            device.ExecuteCommand(CommandText);
         }
     }
 }
