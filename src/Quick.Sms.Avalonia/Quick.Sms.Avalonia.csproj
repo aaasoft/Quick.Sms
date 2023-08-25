@@ -26,4 +26,8 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\Quick.Sms\Quick.Sms.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <AvaloniaResource Include="..\..\resource\Logo.ico" Link="Logo.ico" />
+	</ItemGroup>
 </Project>
