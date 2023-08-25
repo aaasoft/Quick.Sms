@@ -12,7 +12,7 @@
 	<Window.Resources>
 		<converters:BooleanReverseConverter x:Key="booleanReverseConverter" />
 	</Window.Resources>
-	<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+	<ScrollViewer VerticalScrollBarVisibility="Auto">
 		<Panel>
 			<Grid ColumnDefinitions="*,*" RowDefinitions="Auto,*" IsEnabled="{Binding MessageBox.IsVisible,Converter={StaticResource booleanReverseConverter}}">
 				<Grid.Styles>
@@ -23,7 +23,7 @@
 						<Setter Property="Margin" Value="0,2,0,2"/>
 					</Style>
 					<Style Selector="Label">
-						<Setter Property="MinWidth" Value="60"/>
+						<Setter Property="MinWidth" Value="80"/>
 						<Setter Property="Theme" Value="{StaticResource TagLabel}"/>
 						<Setter Property="VerticalAlignment" Value="Stretch"/>
 						<Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -95,26 +95,24 @@
 					<HeaderedContentControl Header="状态" Width="NaN" Height="NaN" Theme="{DynamicResource GroupBox}">
 						<ScrollViewer>
 							<StackPanel Orientation="Vertical">
-								<Button Classes="Tertiary">全部刷新</Button>
-								<ItemsControl ItemsSource="{Binding StatusDict}">
-									<!--
-								<ItemsControl.DataTemplates>
-									<DataTemplate>
-										<Border Classes="row">
-											<Grid ColumnDefinitions="Auto,*,Auto">
-												<Label Grid.Column="0" Classes="Large">
-													<AccessText Text="{Binding Key.Name}"></AccessText>
-												</Label>
-												<TextBox Grid.Column="1" Text="{Binding Value}"></TextBox>
-												<StackPanel Grid.Column="2" Orientation="Horizontal">
-													<Button Classes="Tertiary" Theme="{DynamicResource SolidButton}">读</Button>
-													<Button Classes="Tertiary" Theme="{DynamicResource SolidButton}">写</Button>
-												</StackPanel>
-											</Grid>
-										</Border>
-									</DataTemplate>
-								</ItemsControl.DataTemplates>
-								-->
+								<Button Classes="Tertiary" Command="{Binding RefreshAllStatusCommand}">全部刷新</Button>
+								<ItemsControl ItemsSource="{Binding StatusInfos}">
+									<ItemsControl.DataTemplates>
+										<DataTemplate x:DataType="vm:SmsDeviceStatusViewModel">
+											<Border Classes="row">
+												<Grid ColumnDefinitions="Auto,*,Auto">
+													<Label Grid.Column="0" Classes="Large">
+														<AccessText Text="{Binding Status.Name}"></AccessText>
+													</Label>
+													<TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding Value}"></TextBox>
+													<StackPanel Grid.Column="2" Orientation="Horizontal">
+														<Button Classes="Tertiary" Command="{Binding ReadStatusCommand}">读</Button>
+														<Button Classes="Tertiary" IsVisible="{Binding CanWrite}" Command="{Binding WriteStatusCommand}">写</Button>
+													</StackPanel>
+												</Grid>
+											</Border>
+										</DataTemplate>
+									</ItemsControl.DataTemplates>
 								</ItemsControl>
 							</StackPanel>
 						</ScrollViewer>

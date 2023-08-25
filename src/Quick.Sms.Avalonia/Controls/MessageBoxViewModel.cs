@@ -1,14 +1,31 @@
 ﻿using Quick.Sms.Avalonia.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Quick.Sms.Avalonia.Controls
 {
-    public class MessageBoxViewModel : ViewModels.PropertyNotifyModel
+    public class MessageBoxViewModel : PropertyNotifyModel
     {
+        public enum MessageBoxType
+        {
+            Message,
+            Loading,
+            Prompt
+        }
+
+        private MessageBoxType _Type = MessageBoxType.Message;
+        public MessageBoxType Type
+        {
+            get { return _Type; }
+            set
+            {
+                _Type = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(IsTypePrompt));
+            }
+        }
+
+        public bool IsTypePrompt => Type == MessageBoxType.Prompt;
+
         private bool _IsVisible = false;
         public bool IsVisible
         {
@@ -31,7 +48,7 @@ namespace Quick.Sms.Avalonia.Controls
             }
         }
 
-        private string _ButtonOkText="OK";
+        private string _ButtonOkText = "OK";
         public string ButtonOkText
         {
             get { return _ButtonOkText; }
@@ -64,6 +81,19 @@ namespace Quick.Sms.Avalonia.Controls
             }
         }
 
+        private string _PromptValue;
+        public string PromptValue
+        {
+            get { return _PromptValue; }
+            set
+            {
+                _PromptValue = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private Action<string> PromptHandler;
+
         public DelegateCommand OkCommand { get; set; }
 
         public MessageBoxViewModel()
@@ -73,6 +103,7 @@ namespace Quick.Sms.Avalonia.Controls
 
         public void Show(string title, string message)
         {
+            Type = MessageBoxType.Message;
             Title = title;
             Message = message;
             ButtonOkVisiable = true;
@@ -81,9 +112,21 @@ namespace Quick.Sms.Avalonia.Controls
 
         public void Loading(string title, string message)
         {
+            Type = MessageBoxType.Loading;
             Title = title;
             Message = message;
             ButtonOkVisiable = false;
+            IsVisible = true;
+        }
+
+        public void Prompt(string title, string message, string promptValue, Action<string> promptHandler)
+        {
+            Type = MessageBoxType.Prompt;
+            Title = title;
+            Message = message;
+            PromptValue = promptValue;
+            PromptHandler = promptHandler;
+            ButtonOkVisiable = true;
             IsVisible = true;
         }
 
@@ -94,6 +137,16 @@ namespace Quick.Sms.Avalonia.Controls
 
         private void executeCommand_OkCommand(object e)
         {
+            switch (Type)
+            {
+                case MessageBoxType.Prompt:
+                    if (PromptHandler != null)
+                    {
+                        PromptHandler.Invoke(PromptValue);
+                        PromptHandler = null;
+                    }
+                    break;
+            }
             Close();
         }
     }

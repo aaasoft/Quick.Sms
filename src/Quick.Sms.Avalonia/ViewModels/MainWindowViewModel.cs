@@ -24,6 +24,7 @@ namespace Quick.Sms.Avalonia.ViewModels
 
         public DelegateCommand OpenCommand { get; set; }
         public DelegateCommand ScanCommand { get; set; }
+        public DelegateCommand RefreshAllStatusCommand { get; set; }
 
         private bool _IsOpen = false;
         /// <summary>
@@ -63,6 +64,7 @@ namespace Quick.Sms.Avalonia.ViewModels
                 RaisePropertyChanged();
             }
         }
+
         //设备类型
         private SmsDeviceTypeInfo _DeviceType;
         public SmsDeviceTypeInfo DeviceType
@@ -74,6 +76,7 @@ namespace Quick.Sms.Avalonia.ViewModels
                 RaisePropertyChanged();
             }
         }
+
         private string _SendTo;
         /// <summary>
         /// 发送到
@@ -104,13 +107,13 @@ namespace Quick.Sms.Avalonia.ViewModels
         /// <summary>
         /// 状态字典
         /// </summary>
-        private Dictionary<SmsDeviceStatus, string> _StatusDict;
-        public Dictionary<SmsDeviceStatus, string> StatusDict
+        private SmsDeviceStatusViewModel[] _StatusInfos;
+        public SmsDeviceStatusViewModel[] StatusInfos
         {
-            get { return _StatusDict; }
+            get { return _StatusInfos; }
             set
             {
-                _StatusDict = value;
+                _StatusInfos = value;
                 RaisePropertyChanged();
             }
         }
@@ -134,12 +137,12 @@ namespace Quick.Sms.Avalonia.ViewModels
             var assembly = GetType().Assembly;
             Title = $"{assembly.GetCustomAttribute<AssemblyProductAttribute>().Product} v{assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version}";
             PortNames = System.IO.Ports.SerialPort.GetPortNames();
-            DeviceTypeInfos = SmsDeviceManager.Instnce.GetDeviceTypeInfos();            
+            DeviceTypeInfos = SmsDeviceManager.Instnce.GetDeviceTypeInfos();
 
             OpenCommand = new DelegateCommand() { ExecuteCommand = executeCommand_OpenCommand, CanExecuteCommand = t => !string.IsNullOrEmpty(PortName) };
             ScanCommand = new DelegateCommand() { ExecuteCommand = executeCommand_ScanCommand, CanExecuteCommand = t => !string.IsNullOrEmpty(PortName) };
+            RefreshAllStatusCommand = new DelegateCommand() { ExecuteCommand = executeCommand_RefreshAllStatusCommand };
         }
-
 
         private async Task OpenSerialPort()
         {
@@ -153,7 +156,11 @@ namespace Quick.Sms.Avalonia.ViewModels
             //device.LineRecved += (sender, line) => pushLog("RX " + line);
 
             await Task.Run(() => device.Open());
-            StatusDict = device.Status.ToDictionary(t => t, t => String.Empty);
+            StatusInfos = device.Status.Select(t => new SmsDeviceStatusViewModel(MessageBox)
+            {
+                Status = t,
+                Value = string.Empty
+            }).ToArray();
             IsOpen = true;
         }
 
@@ -209,6 +216,13 @@ namespace Quick.Sms.Avalonia.ViewModels
                 DeviceType = null;
                 MessageBox.Show("失败", $"识别失败!{Environment.NewLine}{ex.Message}");
             }
+        }
+
+        private async void executeCommand_RefreshAllStatusCommand(object e)
+        {
+            foreach (var statusInfo in StatusInfos)
+                await statusInfo.ReadStatus(false);
+            MessageBox.Close();
         }
     }
 }

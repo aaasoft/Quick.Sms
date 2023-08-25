@@ -18,7 +18,10 @@
 				MinWidth="400" MinHeight="200"
 				Background="{DynamicResource SemiColorBackground0}" Theme="{DynamicResource GroupBox}">
 				<Grid RowDefinitions="*,Auto">
-					<TextBlock TextWrapping="WrapWithOverflow" Text="{Binding Message}"></TextBlock>
+					<StackPanel Grid.Row="0" Orientation="Vertical">
+						<TextBlock TextWrapping="WrapWithOverflow" Text="{Binding Message}"></TextBlock>
+						<TextBox Margin="0,4,0,0" IsVisible="{Binding IsTypePrompt}" Text="{Binding PromptValue}"></TextBox>
+					</StackPanel>
 					<WrapPanel Grid.Row="1" HorizontalAlignment="Right">
 						<Button IsVisible="{Binding ButtonOkVisiable}" Command="{Binding OkCommand}" Classes="Tertiary" Theme="{DynamicResource SolidButton}">
 							<AccessText Text="{Binding ButtonOkText}"></AccessText>

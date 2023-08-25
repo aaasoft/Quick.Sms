@@ -612,12 +612,9 @@ namespace Quick.Sms
                 var device = item as AbstractSerialPortModem;
                 if (device == null)
                     continue;
+                var deviceTypeId = device.GetType().FullName;
                 if (device.IsMatch(text))
-                    return new SmsDeviceTypeInfo()
-                    {
-                        Id = device.GetType().FullName,
-                        Name = device.Name
-                    };
+                    return SmsDeviceManager.Instnce.GetDeviceTypeInfo(deviceTypeId);
             }
             throw new ApplicationException(text);
         }

@@ -13,6 +13,7 @@ namespace Quick.Sms
         public static SmsDeviceManager Instnce { get; } = new SmsDeviceManager();
 
         private Dictionary<string, ISmsDevice> deviceDict = new Dictionary<string, ISmsDevice>();
+        private Dictionary<string, SmsDeviceTypeInfo> deviceTypeDict = new Dictionary<string, SmsDeviceTypeInfo>();
 
         private SmsDeviceManager()
         {
@@ -34,7 +35,12 @@ namespace Quick.Sms
         private void Register(ISmsDevice device)
         {
             var key = device.GetType().FullName;
-            deviceDict[key] = (ISmsDevice)device;
+            deviceDict[key] = device;
+            deviceTypeDict[key] = new SmsDeviceTypeInfo()
+            {
+                Id = key,
+                Name = device.Name
+            };
         }
 
         public void Register(params Assembly[] assemblys)
@@ -52,11 +58,7 @@ namespace Quick.Sms
 
         public SmsDeviceTypeInfo[] GetDeviceTypeInfos()
         {
-            return deviceDict.Select(t => new SmsDeviceTypeInfo()
-            {
-                Id = t.Key,
-                Name = t.Value.Name
-            }).ToArray();
+            return deviceTypeDict.Values.ToArray();
         }
 
         /// <summary>
@@ -65,12 +67,23 @@ namespace Quick.Sms
         /// <returns></returns>
         public ISmsDevice CreateDeviceInstance(string deviceTypeId, Object settingObj)
         {
-            if (!deviceDict.ContainsKey(deviceTypeId))
+            if (!deviceDict.TryGetValue(deviceTypeId, out var masterDevice))
                 return null;
-            var masterDevice = deviceDict[deviceTypeId];
             var model = (ISmsDevice)Activator.CreateInstance(masterDevice.GetType());
             model.Init(settingObj);
             return model;
+        }
+
+        /// <summary>
+        /// 获取设备类型信息
+        /// </summary>
+        /// <param name="deviceTypeId"></param>
+        /// <returns></returns>
+        public SmsDeviceTypeInfo GetDeviceTypeInfo(string deviceTypeId)
+        {
+            if (deviceTypeDict.TryGetValue(deviceTypeId, out var model))
+                return model;
+            return null;
         }
     }
 }
