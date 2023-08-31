@@ -13,7 +13,6 @@ public partial class MainWindow : Window
     {
         var viewModel = new ViewModels.MainWindowViewModel();
         DataContext = viewModel;
-        Title = viewModel.Title;
         InitializeComponent();
         txtLogs.TextChanged += TxtLogs_TextChanged;
         txtLogsScrollViewer = FindVisualTreeChild<ScrollViewer>(txtLogs);
