@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Quick.Sms.Razor
+namespace Quick.Sms.BlazorServer
 {
     public static class GeneralExtended
     {

@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<RollForward>Major</RollForward>
+		<ImplicitUsings>enable</ImplicitUsings>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	</PropertyGroup>
 
@@ -12,6 +13,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Quick.Sms.Razor\Quick.Sms.Razor.csproj" />
+		<ProjectReference Include="..\Quick.Sms\Quick.Sms.csproj" />
 	</ItemGroup>
 </Project>

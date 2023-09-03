@@ -1,14 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Quick.Protocol;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using YiQiDong.Agent;
+﻿using YiQiDong.Agent;
 using YiQiDong.Core;
 using YiQiDong.Core.Utils;
 using YiQiDong.Protocol.V1.Model;
