@@ -2,7 +2,7 @@
 using Quick.Blazor.Bootstrap.Admin.Utils;
 using Quick.Blazor.Bootstrap;
 
-namespace Quick.Sms.BlazorServer
+namespace Quick.Sms.Web
 {
     public partial class TestComponent : ComponentBase, IDisposable
     {

@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "Quick.Sms.BlazorServer": {
+    "Quick.Sms.Web": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

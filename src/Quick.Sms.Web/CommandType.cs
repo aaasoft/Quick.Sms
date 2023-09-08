@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Quick.Sms.BlazorServer
+namespace Quick.Sms.Web
 {
     public enum CommandType
     {

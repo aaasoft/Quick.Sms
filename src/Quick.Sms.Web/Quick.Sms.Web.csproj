@@ -5,6 +5,7 @@
 		<RollForward>Major</RollForward>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<RootNamespace>Quick.Sms.Web</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>

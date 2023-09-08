@@ -4,5 +4,5 @@
   "Description": "[短信工具]是使用Quick.Sms库进行短信猫调试的程序。",
   "Tags": [ "工具" ],
   "Platform": [ "win_x64", "linux_x64", "linux_arm64", "linux_arm" ],
-  "AgentStartup": "Quick.Sms.BlazorServer.dll"
+  "AgentStartup": "Quick.Sms.Web.dll"
 }

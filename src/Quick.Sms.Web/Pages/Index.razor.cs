@@ -1,7 +1,7 @@
 ﻿using Microsoft.JSInterop;
 using System.Threading.Tasks;
 
-namespace Quick.Sms.BlazorServer.Pages
+namespace Quick.Sms.Web.Pages
 {
     public partial class Index
     {

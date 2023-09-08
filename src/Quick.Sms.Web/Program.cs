@@ -1,4 +1,4 @@
-using Quick.Sms.BlazorServer;
+using Quick.Sms.Web;
 using YiQiDong.Agent;
 
 AgentContext.Instance.InitContainerInfo(args);

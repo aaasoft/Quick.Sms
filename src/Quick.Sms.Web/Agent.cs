@@ -3,7 +3,7 @@ using YiQiDong.Core;
 using YiQiDong.Core.Utils;
 using YiQiDong.Protocol.V1.Model;
 
-namespace Quick.Sms.BlazorServer
+namespace Quick.Sms.Web
 {
     public class Agent : AbstractAgent
     {
