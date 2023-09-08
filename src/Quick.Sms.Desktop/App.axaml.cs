@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
-namespace Quick.Sms.Avalonia;
+namespace Quick.Sms.Desktop;
 
 public partial class App : Application
 {

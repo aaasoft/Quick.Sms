@@ -1,7 +1,7 @@
 ﻿using Avalonia.Data.Converters;
 using System;
 
-namespace Quick.Sms.Avalonia.Converters
+namespace Quick.Sms.Desktop.Converters
 {
     public abstract class BooleanToTConverter<T> : IValueConverter
     {

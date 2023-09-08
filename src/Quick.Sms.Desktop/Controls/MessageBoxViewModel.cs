@@ -1,7 +1,7 @@
-﻿using Quick.Sms.Avalonia.ViewModels;
+﻿using Quick.Sms.Desktop.ViewModels;
 using System;
 
-namespace Quick.Sms.Avalonia.Controls
+namespace Quick.Sms.Desktop.Controls
 {
     public class MessageBoxViewModel : PropertyNotifyModel
     {

@@ -1,5 +1,5 @@
 ﻿using Avalonia.Media;
-using Quick.Sms.Avalonia.Controls;
+using Quick.Sms.Desktop.Controls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Quick.Sms.Avalonia.ViewModels
+namespace Quick.Sms.Desktop.ViewModels
 {
     public class MainWindowViewModel : PropertyNotifyModel
     {

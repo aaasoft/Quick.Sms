@@ -9,6 +9,7 @@
 		<Version>3.7.2023.825</Version>
 		<Title>短信工具</Title>
 		<Product>短信工具</Product>
+		<RootNamespace>Quick.Sms.Desktop</RootNamespace>
 	</PropertyGroup>
 
 

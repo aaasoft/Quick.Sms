@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "_build\_build.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quick.Sms.CMCC.CloudMAS", "Quick.Sms.CMCC.CloudMAS\Quick.Sms.CMCC.CloudMAS.csproj", "{9D259186-61ED-4CA1-9B35-56621541532D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quick.Sms.Avalonia", "Quick.Sms.Avalonia\Quick.Sms.Avalonia.csproj", "{030C1B44-D113-446B-9C30-261B28BE4A33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quick.Sms.Desktop", "Quick.Sms.Desktop\Quick.Sms.Desktop.csproj", "{030C1B44-D113-446B-9C30-261B28BE4A33}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quick.Sms.BlazorServer", "Quick.Sms.BlazorServer\Quick.Sms.BlazorServer.csproj", "{078ADEFE-8AAB-4B12-A706-4F9EDA2D6222}"
 EndProject

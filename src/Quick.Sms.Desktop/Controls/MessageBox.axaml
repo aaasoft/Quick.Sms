@@ -3,10 +3,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 xmlns:vm="using:Quick.Sms.Avalonia.Controls"
+			 xmlns:vm="using:Quick.Sms.Desktop.Controls"
 			 x:DataType="vm:MessageBoxViewModel"
 			 IsVisible="{Binding IsVisible}"
-             x:Class="Quick.Sms.Avalonia.Controls.MessageBox">
+             x:Class="Quick.Sms.Desktop.Controls.MessageBox">
 	<Panel>
 		<Border Background="{DynamicResource SemiColorDisabledText}">
 		</Border>

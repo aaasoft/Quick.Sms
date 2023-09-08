@@ -4,7 +4,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.VisualTree;
 using System.Threading.Tasks;
 
-namespace Quick.Sms.Avalonia;
+namespace Quick.Sms.Desktop;
 
 public partial class MainWindow : Window
 {

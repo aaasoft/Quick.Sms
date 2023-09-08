@@ -1,11 +1,11 @@
-﻿using Quick.Sms.Avalonia.Controls;
+﻿using Quick.Sms.Desktop.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Quick.Sms.Avalonia.ViewModels
+namespace Quick.Sms.Desktop.ViewModels
 {
     public class SmsDeviceStatusViewModel : PropertyNotifyModel
     {

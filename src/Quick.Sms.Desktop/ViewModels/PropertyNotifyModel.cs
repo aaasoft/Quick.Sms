@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace Quick.Sms.Avalonia.ViewModels
+namespace Quick.Sms.Desktop.ViewModels
 {
     /// <summary>
     /// 通知属性更改的模型基类

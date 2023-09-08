@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Input;
 
-namespace Quick.Sms.Avalonia.ViewModels
+namespace Quick.Sms.Desktop.ViewModels
 {
     public class DelegateCommand : ICommand
     {

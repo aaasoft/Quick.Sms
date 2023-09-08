@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using System;
 
-namespace Quick.Sms.Avalonia;
+namespace Quick.Sms.Desktop;
 
 class Program
 {
