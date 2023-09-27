@@ -28,12 +28,15 @@
 						<Setter Property="Margin" Value="0,2,0,2"/>
 					</Style>
 					<Style Selector="Label">
+						<Setter Property="CornerRadius" Value="4" />
+						<Setter Property="Background" Value="LightGray" />
 						<Setter Property="MinWidth" Value="80"/>
 						<Setter Property="VerticalAlignment" Value="Stretch"/>
 						<Setter Property="VerticalContentAlignment" Value="Center"/>
 					</Style>
 					<Style Selector="Label>AccessText">
 						<Setter Property="HorizontalAlignment" Value="Right"/>
+						<Setter Property="Padding" Value="8,0" />
 					</Style>
 				</Grid.Styles>
 				<Border Classes="card" Grid.Row="0" Grid.Column="0">
