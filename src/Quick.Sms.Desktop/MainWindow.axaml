@@ -29,121 +29,125 @@
 					</Style>
 					<Style Selector="Label">
 						<Setter Property="MinWidth" Value="80"/>
-						<Setter Property="Theme" Value="{StaticResource TagLabel}"/>
 						<Setter Property="VerticalAlignment" Value="Stretch"/>
 						<Setter Property="VerticalContentAlignment" Value="Center"/>
 					</Style>
 					<Style Selector="Label>AccessText">
 						<Setter Property="HorizontalAlignment" Value="Right"/>
 					</Style>
-					<Style Selector="Button">
-						<Setter Property="Theme" Value="{DynamicResource SolidButton}" />
-					</Style>
 				</Grid.Styles>
 				<Border Classes="card" Grid.Row="0" Grid.Column="0">
-					<HeaderedContentControl Header="设备" Width="NaN" Height="NaN" Theme="{DynamicResource GroupBox}">
-						<StackPanel Orientation="Vertical">
-							<Border Classes="row">
-								<Grid ColumnDefinitions="Auto,*,Auto">
-									<Label Grid.Column="0" Classes="Large">串口</Label>
-									<ComboBox Grid.Column="1" HorizontalAlignment="Stretch"
-											  IsEnabled="{Binding IsOpen,Converter={StaticResource booleanReverseConverter}}"
-											  ItemsSource="{Binding PortNames}"
-											  SelectedItem="{Binding PortName}"></ComboBox>
-									<Button Grid.Column="2" Classes="Tertiary" Command="{Binding OpenCommand}" IsVisible="{Binding IsOpen,Converter={StaticResource booleanReverseConverter}}">打开</Button>
-									<Button Grid.Column="2" Classes="Tertiary" Command="{Binding CloseCommand}" IsVisible="{Binding IsOpen}">关闭</Button>
-								</Grid>
-							</Border>
-							<Border Classes="row">
-								<Grid ColumnDefinitions="Auto,*,Auto">
-									<Label Grid.Column="0" Classes="Large">波特率</Label>
-									<NumericUpDown Grid.Column="1" Minimum="0" FormatString="0"
-										IsEnabled="{Binding IsOpen,Converter={StaticResource booleanReverseConverter}}"
-										Value="{Binding BaudRate}"></NumericUpDown>
-								</Grid>
-							</Border>
-							<Border Classes="row">
-								<Grid ColumnDefinitions="Auto,*,Auto">
-									<Label Grid.Column="0" Classes="Large">类型</Label>
-									<ComboBox Grid.Column="1" HorizontalAlignment="Stretch"
-										IsEnabled="{Binding IsOpen,Converter={StaticResource booleanReverseConverter}}"
-										ItemsSource="{Binding DeviceTypeInfos}"
-										SelectedItem="{Binding DeviceType}">
-										<ComboBox.ItemTemplate>
-											<DataTemplate x:DataType="quick_sms:SmsDeviceTypeInfo">
-												<TextBlock Text="{Binding Name}" />
-											</DataTemplate>
-										</ComboBox.ItemTemplate>
-									</ComboBox>
-									<Button Grid.Column="2" Classes="Tertiary"
+					<TabControl>
+						<TabItem Header="设备">
+							<StackPanel Orientation="Vertical">
+								<Border Classes="row">
+									<Grid ColumnDefinitions="Auto,*,Auto">
+										<Label Grid.Column="0" Classes="Large">串口</Label>
+										<ComboBox Grid.Column="1" HorizontalAlignment="Stretch"
+												  IsEnabled="{Binding IsOpen,Converter={StaticResource booleanReverseConverter}}"
+												  ItemsSource="{Binding PortNames}"
+												  SelectedItem="{Binding PortName}"></ComboBox>
+										<Button Grid.Column="2" Classes="Tertiary" Command="{Binding OpenCommand}" IsVisible="{Binding IsOpen,Converter={StaticResource booleanReverseConverter}}">打开</Button>
+										<Button Grid.Column="2" Classes="Tertiary" Command="{Binding CloseCommand}" IsVisible="{Binding IsOpen}">关闭</Button>
+									</Grid>
+								</Border>
+								<Border Classes="row">
+									<Grid ColumnDefinitions="Auto,*,Auto">
+										<Label Grid.Column="0" Classes="Large">波特率</Label>
+										<NumericUpDown Grid.Column="1" Minimum="0" FormatString="0"
 											IsEnabled="{Binding IsOpen,Converter={StaticResource booleanReverseConverter}}"
-											Command="{Binding ScanCommand}">智能识别</Button>
-								</Grid>
-							</Border>
-						</StackPanel>
-					</HeaderedContentControl>
+											Value="{Binding BaudRate}"></NumericUpDown>
+									</Grid>
+								</Border>
+								<Border Classes="row">
+									<Grid ColumnDefinitions="Auto,*,Auto">
+										<Label Grid.Column="0" Classes="Large">类型</Label>
+										<ComboBox Grid.Column="1" HorizontalAlignment="Stretch"
+											IsEnabled="{Binding IsOpen,Converter={StaticResource booleanReverseConverter}}"
+											ItemsSource="{Binding DeviceTypeInfos}"
+											SelectedItem="{Binding DeviceType}">
+											<ComboBox.ItemTemplate>
+												<DataTemplate x:DataType="quick_sms:SmsDeviceTypeInfo">
+													<TextBlock Text="{Binding Name}" />
+												</DataTemplate>
+											</ComboBox.ItemTemplate>
+										</ComboBox>
+										<Button Grid.Column="2" Classes="Tertiary"
+												IsEnabled="{Binding IsOpen,Converter={StaticResource booleanReverseConverter}}"
+												Command="{Binding ScanCommand}">智能识别</Button>
+									</Grid>
+								</Border>
+							</StackPanel>
+						</TabItem>
+					</TabControl>
 				</Border>
 				<Border Classes="card" Grid.Row="0" Grid.Column="1" IsEnabled="{Binding IsOpen}">
-					<HeaderedContentControl Header="短信" Width="NaN" Height="NaN" Theme="{DynamicResource GroupBox}">
-						<StackPanel Orientation="Vertical">
-							<Border Classes="row">
-								<Grid ColumnDefinitions="Auto,*">
-									<Label Grid.Column="0" Classes="Large">号码</Label>
-									<TextBox Grid.Column="1" Text="{Binding SendTo}"></TextBox>
-								</Grid>
-							</Border>
-							<Border Classes="row">
-								<Grid ColumnDefinitions="Auto,*">
-									<Label Grid.Column="0" Classes="Large">内容</Label>
-									<TextBox Grid.Column="1" Text="{Binding SendContent}"></TextBox>
-								</Grid>
-							</Border>
-							<Button Classes="Tertiary" Command="{Binding SendCommand}">发送</Button>
-						</StackPanel>
-					</HeaderedContentControl>
+					<TabControl>
+						<TabItem Header="短信">
+							<StackPanel Orientation="Vertical">
+								<Border Classes="row">
+									<Grid ColumnDefinitions="Auto,*">
+										<Label Grid.Column="0" Classes="Large">号码</Label>
+										<TextBox Grid.Column="1" Text="{Binding SendTo}"></TextBox>
+									</Grid>
+								</Border>
+								<Border Classes="row">
+									<Grid ColumnDefinitions="Auto,*">
+										<Label Grid.Column="0" Classes="Large">内容</Label>
+										<TextBox Grid.Column="1" Text="{Binding SendContent}"></TextBox>
+									</Grid>
+								</Border>
+								<Button Classes="Tertiary" Command="{Binding SendCommand}">发送</Button>
+							</StackPanel>
+						</TabItem>
+					</TabControl>
 				</Border>
 				<Border Classes="card" Grid.Row="1" Grid.Column="0" IsEnabled="{Binding IsOpen}">
-					<HeaderedContentControl Header="状态" Width="NaN" Height="NaN" Theme="{DynamicResource GroupBox}">
-						<ScrollViewer>
-							<StackPanel Orientation="Vertical">
-								<Button Classes="Tertiary" Command="{Binding RefreshAllStatusCommand}">全部刷新</Button>
-								<ItemsControl ItemsSource="{Binding StatusInfos}">
-									<ItemsControl.DataTemplates>
-										<DataTemplate x:DataType="vm:SmsDeviceStatusViewModel">
-											<Border Classes="row">
-												<Grid ColumnDefinitions="Auto,*,Auto">
-													<Label Grid.Column="0" Classes="Large">
-														<AccessText Text="{Binding Status.Name}"></AccessText>
-													</Label>
-													<TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding Value}"></TextBox>
-													<StackPanel Grid.Column="2" Orientation="Horizontal">
-														<Button Classes="Tertiary" Command="{Binding ReadStatusCommand}">读</Button>
-														<Button Classes="Tertiary" IsVisible="{Binding CanWrite}" Command="{Binding WriteStatusCommand}">写</Button>
-													</StackPanel>
-												</Grid>
-											</Border>
-										</DataTemplate>
-									</ItemsControl.DataTemplates>
-								</ItemsControl>
-							</StackPanel>
-						</ScrollViewer>
-					</HeaderedContentControl>
+					<TabControl>
+						<TabItem Header="状态">
+							<ScrollViewer>
+								<StackPanel Orientation="Vertical">
+									<Button Classes="Tertiary" Command="{Binding RefreshAllStatusCommand}">全部刷新</Button>
+									<ItemsControl ItemsSource="{Binding StatusInfos}">
+										<ItemsControl.DataTemplates>
+											<DataTemplate x:DataType="vm:SmsDeviceStatusViewModel">
+												<Border Classes="row">
+													<Grid ColumnDefinitions="Auto,*,Auto">
+														<Label Grid.Column="0" Classes="Large">
+															<AccessText Text="{Binding Status.Name}"></AccessText>
+														</Label>
+														<TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding Value}"></TextBox>
+														<StackPanel Grid.Column="2" Orientation="Horizontal">
+															<Button Classes="Tertiary" Command="{Binding ReadStatusCommand}">读</Button>
+															<Button Classes="Tertiary" IsVisible="{Binding CanWrite}" Command="{Binding WriteStatusCommand}">写</Button>
+														</StackPanel>
+													</Grid>
+												</Border>
+											</DataTemplate>
+										</ItemsControl.DataTemplates>
+									</ItemsControl>
+								</StackPanel>
+							</ScrollViewer>
+						</TabItem>
+					</TabControl>
 				</Border>
 				<Border Classes="card" Grid.Row="1" Grid.Column="1" IsEnabled="{Binding IsOpen}">
-					<HeaderedContentControl Header="终端" Width="NaN" Height="NaN" Theme="{DynamicResource GroupBox}">
-						<Grid RowDefinitions="*,Auto">
-							<TextBox x:Name="txtLogs"
-								Grid.Row="0" VerticalContentAlignment="Top"
-								IsReadOnly="True" TextWrapping="Wrap"
-								AcceptsReturn="True" Text="{Binding Logs}" />
-							<Border Grid.Row="1" Classes="row">
-								<Grid ColumnDefinitions="*,Auto">
-									<TextBox Grid.Row="0" Text="{Binding CommandText}" />
-									<Button Grid.Column="1" Classes="Tertiary" Command="{Binding SendATCommand}">发送</Button>
-								</Grid>
-							</Border>
-						</Grid>
-					</HeaderedContentControl>
+					<TabControl>
+						<TabItem Header="终端">
+							<Grid RowDefinitions="*,Auto">
+								<TextBox x:Name="txtLogs"
+									Grid.Row="0" VerticalContentAlignment="Top"
+									IsReadOnly="True" TextWrapping="Wrap"
+									AcceptsReturn="True" Text="{Binding Logs}" />
+								<Border Grid.Row="1" Classes="row">
+									<Grid ColumnDefinitions="*,Auto">
+										<TextBox Grid.Row="0" Text="{Binding CommandText}" />
+										<Button Grid.Column="1" Classes="Tertiary" Command="{Binding SendATCommand}">发送</Button>
+									</Grid>
+								</Border>
+							</Grid>
+						</TabItem>
+					</TabControl>
 				</Border>
 			</Grid>
 			<controls:MessageBox DataContext="{Binding MessageBox}"></controls:MessageBox>
