@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using Quick.Build;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;
@@ -26,8 +26,8 @@ foreach (var fi in new DirectoryInfo("src").GetDirectories())
     if (!File.Exists(yiqidongImageFile))
         continue;
     var yiqidongImageFileContent = File.ReadAllText(yiqidongImageFile);
-    var jObj = JObject.Parse(yiqidongImageFileContent);
-    productDict[fi.Name] = jObj.Property("Name").Value.ToString();
+    var jObj = JsonObject.Parse(yiqidongImageFileContent);
+    productDict[fi.Name] = jObj["Name"].ToString();
 }
 
 Console.WriteLine("请选择编译项目(一个都不勾选代表全选)：");
@@ -67,7 +67,6 @@ foreach (var productDir in productDirs)
         archive.AddAllFromDirectory(publishFolder);
         archive.SaveTo(outFile, CompressionType.LZMA);
     }
-    QbFile.ChangeHeader(outFile, "yz");
 }
 Console.WriteLine("完成");
 //如果是在Windows平台，则打开窗口
