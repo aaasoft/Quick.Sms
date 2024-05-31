@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;netstandard20</TargetFrameworks>
+		<TargetFrameworks>net6.0;net45</TargetFrameworks>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<PackageProjectUrl>https://github.com/aaasoft/Quick.Sms</PackageProjectUrl>
 		<PackageIcon>Logo.png</PackageIcon>
@@ -16,8 +16,9 @@
 			<PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	
+	<ItemGroup Condition=" '$(TargetFramework)'=='net45' ">
+		<Reference Include="System.Net.Http" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 </Project>

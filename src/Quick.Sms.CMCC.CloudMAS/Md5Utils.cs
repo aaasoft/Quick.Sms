@@ -11,10 +11,10 @@ namespace Quick.Sms.CMCC.CloudMAS
     {
         public static string Compute(string input)
         {
-#if NETSTANDARD2_0
-            var buffer = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(input));
+#if NET6_0_OR_GREATER
+            var buffer = MD5.HashData(Encoding.UTF8.GetBytes(input));            
 #else
-            var buffer = MD5.HashData(Encoding.UTF8.GetBytes(input));
+            var buffer = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(input));
 #endif
             return BitConverter.ToString(buffer).Replace("-", "").ToLower();
         }

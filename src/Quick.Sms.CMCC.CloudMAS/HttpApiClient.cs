@@ -1,4 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿#if  NET6_0_OR_GREATER
+using System.Text.Json;
+#else
+using Newtonsoft.Json;
+#endif
 using System;
 using System.IO;
 using System.Net.Http;
@@ -51,7 +55,7 @@ namespace Quick.Sms.CMCC.CloudMAS
             sb.Append(options.addSerial);
             var mac = Md5Utils.Compute(sb.ToString());
 
-            var bodyJson = JsonConvert.SerializeObject(new Submit()
+            var bodyModel = new Submit()
             {
                 ecName = options.ecName,
                 apId = options.apId,
@@ -60,7 +64,13 @@ namespace Quick.Sms.CMCC.CloudMAS
                 sign = options.sign,
                 addSerial = options.addSerial,
                 mac = mac
-            });
+            };
+            #if NET6_0_OR_GREATER
+            var bodyJson = JsonSerializer.Serialize(bodyModel);
+            #else
+            var bodyJson = JsonConvert.SerializeObject(bodyModel);
+            #endif            
+
             var bodyBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(bodyJson));
             var httpContent = new StringContent(bodyBase64);
             var httpClient = new HttpClient();
@@ -68,7 +78,11 @@ namespace Quick.Sms.CMCC.CloudMAS
             if (!rep.IsSuccessStatusCode)
                 throw new IOException($"{rep.StatusCode} {rep.ReasonPhrase}");
             var repContent = await rep.Content.ReadAsStringAsync();
-            var apiResult = JsonConvert.DeserializeObject<ApiResult>(repContent);
+            #if NET6_0_OR_GREATER
+            var apiResult = JsonSerializer.Deserialize<ApiResult>(repContent);
+            #else
+            var apiResult = JsonConvert.DeserializeObject<ApiResult>(repContent);            
+            #endif
             if (apiResult.success)
                 return;
             throw new IOException(apiResult.rspcod);
