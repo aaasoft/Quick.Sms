@@ -55,6 +55,7 @@ foreach (var productDir in productDirs)
 
     Console.WriteLine($"正在发布{productName}项目...");
     QbCommand.Run("dotnet", $"publish -c Release src/{productDir}");
+    QbDotNet.KeepPublishRuntimes(publishFolder,"win", "unix", "win-x64", "linux-x64", "linux-arm64");
     //复制文件
     QbFile.CopyFiles($"src/{productDir}", publishFolder, "YiQiDong.Image.*", true);
 
@@ -67,12 +68,6 @@ foreach (var productDir in productDirs)
         archive.AddAllFromDirectory(publishFolder);
         archive.SaveTo(outFile, CompressionType.LZMA);
     }
-    QbFile.ChangeHeader(outFile, "yz");
 }
 Console.WriteLine("完成");
-//如果是在Windows平台，则打开窗口
-if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-{
-    try { QbCommand.Run("Explorer", @"bin"); }
-    catch { }
-}
+QbGui.OpenFolder("bin");
