@@ -7,7 +7,7 @@
     <PackageIcon>Logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/aaasoft/Quick.Sms</RepositoryUrl>
     <Description>Send sms with Wireless module(GSM/LTE etc).</Description>
-    <Version>1.0.5</Version>
+    <Version>1.0.6</Version>
   </PropertyGroup>
 
   <ItemGroup>
