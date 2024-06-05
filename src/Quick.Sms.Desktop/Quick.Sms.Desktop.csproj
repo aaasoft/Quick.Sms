@@ -10,16 +10,18 @@
 		<Title>短信工具</Title>
 		<Product>短信工具</Product>
 		<RootNamespace>Quick.Sms.Desktop</RootNamespace>
+		<PublishSingleFile>true</PublishSingleFile>
+    	<PublishTrimmed>true</PublishTrimmed>
 	</PropertyGroup>
 
 
 	<ItemGroup>
-		<PackageReference Include="Avalonia" Version="11.0.4" />
-		<PackageReference Include="Avalonia.Desktop" Version="11.0.4" />
-		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.4" />
-		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.4" />
+		<PackageReference Include="Avalonia" Version="11.0.10" />
+		<PackageReference Include="Avalonia.Desktop" Version="11.0.10" />
+		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.10" />
+		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.10" />
 		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.4" />
+		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10" />
 		<PackageReference Include="Quick.AvaloniaFonts.SourceHanSansCN.Slim" Version="1.0.0" />
 	</ItemGroup>
 
