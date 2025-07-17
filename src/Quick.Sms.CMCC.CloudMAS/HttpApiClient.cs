@@ -36,6 +36,18 @@ namespace Quick.Sms.CMCC.CloudMAS
             public string mac { get; set; }
         }
 
+        private class TemplateSubmit
+        {
+            public string ecName { get; set; }
+            public string apId { get; set; }
+            public string templateId { get; set; }
+            public string mobiles { get; set; }
+            public string @params { get; set; }
+            public string sign { get; set; }
+            public string addSerial { get; set; }
+            public string mac { get; set; }
+        }
+
         private class ApiResult
         {
             public string rspcod { get; set; }
@@ -65,11 +77,11 @@ namespace Quick.Sms.CMCC.CloudMAS
                 addSerial = options.addSerial,
                 mac = mac
             };
-            #if NET6_0_OR_GREATER
+#if NET6_0_OR_GREATER
             var bodyJson = JsonSerializer.Serialize(bodyModel);
-            #else
+#else
             var bodyJson = JsonConvert.SerializeObject(bodyModel);
-            #endif            
+#endif
 
             var bodyBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(bodyJson));
             var httpContent = new StringContent(bodyBase64);
@@ -78,11 +90,58 @@ namespace Quick.Sms.CMCC.CloudMAS
             if (!rep.IsSuccessStatusCode)
                 throw new IOException($"{rep.StatusCode} {rep.ReasonPhrase}");
             var repContent = await rep.Content.ReadAsStringAsync();
-            #if NET6_0_OR_GREATER
+#if NET6_0_OR_GREATER
             var apiResult = JsonSerializer.Deserialize<ApiResult>(repContent);
-            #else
+#else
             var apiResult = JsonConvert.DeserializeObject<ApiResult>(repContent);            
-            #endif
+#endif
+            if (apiResult.success)
+                return;
+            throw new IOException(apiResult.rspcod);
+        }
+
+        public async Task SendTemplateSmsAsync(string mobiles, string templateId, string @params, CancellationToken cancellationToken)
+        {
+            var sb = new StringBuilder();
+            sb.Append(options.ecName);
+            sb.Append(options.apId);
+            sb.Append(options.secretKey);
+            sb.Append(templateId);
+            sb.Append(mobiles);
+            sb.Append(@params);
+            sb.Append(options.sign);
+            sb.Append(options.addSerial);
+            var mac = Md5Utils.Compute(sb.ToString());
+
+            var bodyModel = new TemplateSubmit()
+            {
+                ecName = options.ecName,
+                apId = options.apId,
+                templateId = templateId,
+                mobiles = mobiles,
+                @params = @params,
+                sign = options.sign,
+                addSerial = options.addSerial,
+                mac = mac
+            };
+#if NET6_0_OR_GREATER
+            var bodyJson = JsonSerializer.Serialize(bodyModel);
+#else
+            var bodyJson = JsonConvert.SerializeObject(bodyModel);
+#endif
+
+            var bodyBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(bodyJson));
+            var httpContent = new StringContent(bodyBase64);
+            var httpClient = new HttpClient();
+            var rep = await httpClient.PostAsync(options.url, httpContent, cancellationToken);
+            if (!rep.IsSuccessStatusCode)
+                throw new IOException($"{rep.StatusCode} {rep.ReasonPhrase}");
+            var repContent = await rep.Content.ReadAsStringAsync();
+#if NET6_0_OR_GREATER
+            var apiResult = JsonSerializer.Deserialize<ApiResult>(repContent);
+#else
+            var apiResult = JsonConvert.DeserializeObject<ApiResult>(repContent);            
+#endif
             if (apiResult.success)
                 return;
             throw new IOException(apiResult.rspcod);
