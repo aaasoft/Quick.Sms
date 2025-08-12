@@ -100,7 +100,7 @@ namespace Quick.Sms.CMCC.CloudMAS
             throw new IOException(apiResult.rspcod);
         }
 
-        public async Task SendTemplateSmsAsync(string mobiles, string templateId, string @params, CancellationToken cancellationToken)
+        public async Task SendTemplateSmsAsync(string mobiles, string templateId, string[] @params, CancellationToken cancellationToken)
         {
             var sb = new StringBuilder();
             sb.Append(options.ecName);
@@ -113,13 +113,19 @@ namespace Quick.Sms.CMCC.CloudMAS
             sb.Append(options.addSerial);
             var mac = Md5Utils.Compute(sb.ToString());
 
+#if NET6_0_OR_GREATER
+            var paramsJson = JsonSerializer.Serialize(@params);
+#else
+            var paramsJson = JsonConvert.SerializeObject(@params);
+#endif
+
             var bodyModel = new TemplateSubmit()
             {
                 ecName = options.ecName,
                 apId = options.apId,
                 templateId = templateId,
                 mobiles = mobiles,
-                @params = @params,
+                @params = paramsJson,
                 sign = options.sign,
                 addSerial = options.addSerial,
                 mac = mac
