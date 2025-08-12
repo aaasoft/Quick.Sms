@@ -102,22 +102,22 @@ namespace Quick.Sms.CMCC.CloudMAS
 
         public async Task SendTemplateSmsAsync(string mobiles, string templateId, string[] @params, CancellationToken cancellationToken)
         {
+#if NET6_0_OR_GREATER
+            var paramsJson = JsonSerializer.Serialize(@params);
+#else
+            var paramsJson = JsonConvert.SerializeObject(@params);
+#endif
+
             var sb = new StringBuilder();
             sb.Append(options.ecName);
             sb.Append(options.apId);
             sb.Append(options.secretKey);
             sb.Append(templateId);
             sb.Append(mobiles);
-            sb.Append(@params);
+            sb.Append(paramsJson);
             sb.Append(options.sign);
             sb.Append(options.addSerial);
             var mac = Md5Utils.Compute(sb.ToString());
-
-#if NET6_0_OR_GREATER
-            var paramsJson = JsonSerializer.Serialize(@params);
-#else
-            var paramsJson = JsonConvert.SerializeObject(@params);
-#endif
 
             var bodyModel = new TemplateSubmit()
             {
