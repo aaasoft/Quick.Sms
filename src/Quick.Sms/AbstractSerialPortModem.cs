@@ -257,8 +257,6 @@ namespace Quick.Sms
                 DataBits = 8,
                 StopBits = StopBits.One,
                 Handshake = Handshake.None,
-                RtsEnable = true,
-                DtrEnable = true,
                 ReadTimeout = Setting.ReadResponseTimeout,
                 WriteTimeout = Setting.WriteCommandTimeout
             };
