@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>net45;net6.0;net8.0;net10.0</TargetFrameworks>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageProjectUrl>https://cnb.cool/scbeta/Quick.Sms</PackageProjectUrl>
     <PackageIcon>Logo.png</PackageIcon>
     <RepositoryUrl>https://cnb.cool/scbeta/Quick.Sms</RepositoryUrl>
