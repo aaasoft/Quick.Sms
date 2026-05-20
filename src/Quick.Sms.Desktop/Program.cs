@@ -1,5 +1,5 @@
-﻿using Avalonia;
-using System;
+﻿using System;
+using Avalonia;
 
 namespace Quick.Sms.Desktop;
 
@@ -14,8 +14,14 @@ class Program
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>()
+    {
+        var appBuilder = AppBuilder.Configure<App>()
             .UsePlatformDetect()
-            .WithFont_SourceHanSansCN()
             .LogToTrace();
+        if (OperatingSystem.IsLinux())
+        {
+            appBuilder = appBuilder.WithFont_SourceHanSansCN();
+        }
+        return appBuilder;
+    }
 }

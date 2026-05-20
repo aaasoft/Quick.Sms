@@ -3,9 +3,9 @@
 	<PropertyGroup>
 		<TargetFrameworks>net6.0;net45</TargetFrameworks>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<PackageProjectUrl>https://cnb.cool/scbeta/Quick.Sms</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/aaasoft/Quick.Sms</PackageProjectUrl>
 		<PackageIcon>Logo.png</PackageIcon>
-		<RepositoryUrl>https://cnb.cool/scbeta/Quick.Sms</RepositoryUrl>
+		<RepositoryUrl>https://github.com/aaasoft/Quick.Sms</RepositoryUrl>
 		<Description>Send sms with CMCC CloudMAS.</Description>
 		<Version>1.0.8</Version>
 	</PropertyGroup>
