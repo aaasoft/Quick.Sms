@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;net45</TargetFrameworks>
+		<TargetFrameworks>net46;net6.0;net8.0;net10.0;</TargetFrameworks>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<PackageProjectUrl>https://github.com/aaasoft/Quick.Sms</PackageProjectUrl>
 		<PackageIcon>Logo.png</PackageIcon>
 		<RepositoryUrl>https://github.com/aaasoft/Quick.Sms</RepositoryUrl>
 		<Description>Send sms with CMCC CloudMAS.</Description>
-		<Version>1.0.8</Version>
+		<Version>2026.2.520</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -17,7 +17,7 @@
 		</None>
 	</ItemGroup>
 	
-	<ItemGroup Condition=" '$(TargetFramework)'=='net45' ">
+	<ItemGroup Condition=" '$(TargetFramework)'=='net46' ">
 		<Reference Include="System.Net.Http" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 	</ItemGroup>
