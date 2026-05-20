@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Quick.Sms
 {
@@ -17,19 +13,18 @@ namespace Quick.Sms
 
         private SmsDeviceManager()
         {
-            Register(this.GetType().Assembly);
+            Register<SIMComModems.SIM7600.Device>();
+            Register<WavecomModems.CDMA.Device>();
+            Register<WavecomModems.Q2403.Device>();
+            Register<SiemensModems.MC52i.Device>();
+            Register<MeiGModems.SLM320P.Device>();
+            Register<HuaweiModems.MC323.Device>();
         }
 
         public void Register<TDevice>()
-            where TDevice : ISmsDevice
+            where TDevice : class, ISmsDevice, new()
         {
-            Register(typeof(TDevice));
-        }
-
-        public void Register(Type deviceType)
-        {
-            var device = (ISmsDevice)Activator.CreateInstance(deviceType);
-            Register(device);
+            Register(new TDevice());
         }
 
         private void Register(ISmsDevice device)
@@ -41,14 +36,6 @@ namespace Quick.Sms
                 Id = key,
                 Name = device.Name
             };
-        }
-
-        public void Register(params Assembly[] assemblys)
-        {
-            foreach (var assembly in assemblys)
-                foreach (var type in assembly.GetTypes())
-                    if (type.IsPublic && type.IsClass && !type.IsAbstract && typeof(ISmsDevice).IsAssignableFrom(type))
-                        Register(type);
         }
 
         public ISmsDevice[] GetMasterDeviceTypes()
