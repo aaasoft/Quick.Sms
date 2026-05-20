@@ -56,7 +56,7 @@ namespace Quick.Sms
         {
             if (!deviceDict.TryGetValue(deviceTypeId, out var masterDevice))
                 return null;
-            var model = (ISmsDevice)Activator.CreateInstance(masterDevice.GetType());
+            var model = masterDevice.CreateNewInstance();
             model.Init(settingObj);
             return model;
         }

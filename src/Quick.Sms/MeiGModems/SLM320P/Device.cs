@@ -19,7 +19,7 @@ namespace Quick.Sms.MeiGModems.SLM320P
         protected override string[] DeviceMarks => new[] {
             "MeiG", "SLM320P"
         };
-
+        public override ISmsDevice CreateNewInstance() => new Device();
         public override string Name => "崇瀚_SLM320P系列芯片";
 
         public override bool SliceLongText => false;
@@ -93,7 +93,7 @@ namespace Quick.Sms.MeiGModems.SLM320P
         private readonly static Int64 _packageIdMode = ((Int64)Byte.MaxValue + 1L);
         private String GetPackageId()
         {
-            var baseDir = Path.GetDirectoryName(this.GetType().Assembly.Location);
+            var baseDir = AppContext.BaseDirectory;
             var file = Path.Combine(baseDir, @"GlobalPackageId.data");
             var _globalPackageId = 0L;
             try

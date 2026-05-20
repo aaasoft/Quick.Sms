@@ -655,9 +655,13 @@ namespace Quick.Sms
                 throw new ApplicationException(text);
         }
 
+        public abstract ISmsDevice CreateNewInstance();
+
         private class PrivateModem : AbstractSerialPortModem
         {
             public override string Name => throw new NotImplementedException();
+
+            public override ISmsDevice CreateNewInstance()=>new PrivateModem();
 
             protected override void InternalSend(string sendTo, string content)
             {

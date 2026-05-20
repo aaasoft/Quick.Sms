@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFrameworks>net45;net6.0;net8.0;net10.0</TargetFrameworks>
-    <PackageProjectUrl>https://cnb.cool/scbeta/Quick.Sms</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/aaasoft/Quick.Sms</PackageProjectUrl>
     <PackageIcon>Logo.png</PackageIcon>
-    <RepositoryUrl>https://cnb.cool/scbeta/Quick.Sms</RepositoryUrl>
+    <RepositoryUrl>https://github.com/aaasoft/Quick.Sms</RepositoryUrl>
     <Description>Send sms with Wireless module(GSM/LTE etc).</Description>
     <Version>2026.1.107</Version>
   </PropertyGroup>

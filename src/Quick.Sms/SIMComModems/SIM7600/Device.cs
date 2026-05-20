@@ -23,6 +23,7 @@ namespace Quick.Sms.SIMComModems.SIM7600
         };
 
         public override string Name => "SIMCom_SIM7600系列芯片";
+        public override ISmsDevice CreateNewInstance() => new Device();
         public SmsDeviceStatus Status_CPSI { get; private set; }
         public SmsDeviceStatus Status_CNSMOD { get; private set; }
         public override SmsDeviceStatus[] Status => base.Status.Concat(new[]

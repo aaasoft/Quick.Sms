@@ -1,10 +1,10 @@
-﻿using Quick.Sms.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Quick.Sms.Utils;
 
 namespace Quick.Sms.WavecomModems.Q2403
 {
@@ -12,6 +12,7 @@ namespace Quick.Sms.WavecomModems.Q2403
     {
         //内容尾巴
         private byte[] contentTail = new byte[] { 0x00, 0x1a };
+        public override ISmsDevice CreateNewInstance() => new Device();
 
         public override string Name => "Wavecom_Q2403系列芯片";
         /*

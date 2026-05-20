@@ -63,6 +63,8 @@ namespace Quick.Sms
         /// <param name="command">命令</param>
         /// <returns></returns>
         string ExecuteCommand(string command, string responseHead);
+        ISmsDevice CreateNewInstance();
+
         /// <summary>
         /// 发送了一行数据事件
         /// </summary>

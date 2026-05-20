@@ -1,13 +1,14 @@
-﻿using Quick.Sms;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Quick.Sms;
 
 namespace Quick.Sms.SiemensModems.MC52i
 {
     public class Device : AbstractSerialPortModem
     {
+        public override ISmsDevice CreateNewInstance() => new Device();
         /*
     Siemens_MC52I系列芯片
     -----------------------------

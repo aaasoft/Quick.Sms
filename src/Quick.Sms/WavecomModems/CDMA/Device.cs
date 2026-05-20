@@ -13,6 +13,7 @@ namespace Quick.Sms.WavecomModems.CDMA
         private byte[] contentTail = new byte[] { 0x00, 0x1a };
         public override bool SupportResponseHead => true;
         public override string Name => "Wavecom_CDMA芯片";
+        public override ISmsDevice CreateNewInstance() => new Device();
         /*
             Wavecom CDMA芯片
             -----------------------------

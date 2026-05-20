@@ -9,6 +9,7 @@ namespace Quick.Sms.HuaweiModems.MC323
 {
     public class Device : AbstractSerialPortModem
     {
+        public override ISmsDevice CreateNewInstance() => new Device();
         //内容尾巴
         private byte[] contentTail = new byte[] { 0x00, 0x1a };
         /*
