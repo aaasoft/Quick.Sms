@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Quick.Blazor.Bootstrap.Admin.Utils;
 using Quick.Blazor.Bootstrap;
+using Quick.Utils;
 
 namespace Quick.Sms.Web
 {
@@ -9,7 +9,7 @@ namespace Quick.Sms.Web
         private ModalLoading modalLoading;
         private ModalPrompt modalPrompt;
         private ModalAlert modalAlert;
-        private Quick.Blazor.Bootstrap.Admin.LogViewControl logViewControl;
+        private Quick.Blazor.Bootstrap.LogViewControl logViewControl;
 
         private bool isOpen = false;
         private int baudRate = 115200;

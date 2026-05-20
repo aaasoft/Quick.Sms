@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using Quick.Build;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;
@@ -26,8 +25,8 @@ foreach (var fi in new DirectoryInfo("src").GetDirectories())
     if (!File.Exists(yiqidongImageFile))
         continue;
     var yiqidongImageFileContent = File.ReadAllText(yiqidongImageFile);
-    var jObj = JObject.Parse(yiqidongImageFileContent);
-    productDict[fi.Name] = jObj.Property("Name").Value.ToString();
+    var jObj = JsonNode.Parse(yiqidongImageFileContent).AsObject();
+    productDict[fi.Name] = jObj["Name"].AsValue().ToString();
 }
 
 Console.WriteLine("请选择编译项目(一个都不勾选代表全选)：");
@@ -63,7 +62,7 @@ foreach (var productDir in productDirs)
     QbJson.WriteString(Path.Combine(publishFolder, "YiQiDong.Image.json"), "Version", version);
 
     Console.WriteLine("正在制作弈启动镜像...");
-    using (var archive = ZipArchive.Create())
+    using (var archive = ZipArchive.CreateArchive())
     {
         archive.AddAllFromDirectory(publishFolder);
         archive.SaveTo(outFile, CompressionType.LZMA);
