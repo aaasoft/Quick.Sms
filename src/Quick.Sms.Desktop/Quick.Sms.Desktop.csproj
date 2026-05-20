@@ -12,6 +12,7 @@
 		<RootNamespace>Quick.Sms.Desktop</RootNamespace>
 		<PublishSingleFile>true</PublishSingleFile>
     	<PublishTrimmed>true</PublishTrimmed>
+		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 	</PropertyGroup>
 
 

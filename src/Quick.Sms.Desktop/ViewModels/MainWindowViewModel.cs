@@ -1,6 +1,4 @@
-﻿using Avalonia.Media;
-using Quick.Sms.Desktop.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
@@ -8,6 +6,8 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Avalonia.Media;
+using Quick.Sms.Desktop.Controls;
 
 namespace Quick.Sms.Desktop.ViewModels
 {
@@ -141,8 +141,8 @@ namespace Quick.Sms.Desktop.ViewModels
 
         public MainWindowViewModel()
         {
-            var assembly = GetType().Assembly;
-            Title = $"{assembly.GetCustomAttribute<AssemblyProductAttribute>().Product} v{assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version}";
+            Assembly assembly = GetType().Assembly;
+            Title = $"{assembly.GetCustomAttribute<AssemblyProductAttribute>().Product} v{assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion}";
             PortNames = System.IO.Ports.SerialPort.GetPortNames();
             DeviceTypeInfos = SmsDeviceManager.Instnce.GetDeviceTypeInfos();
 
