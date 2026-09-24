@@ -12,20 +12,19 @@ namespace Quick.Sms.Web
         private Quick.Blazor.Bootstrap.LogViewControl logViewControl;
 
         private bool isOpen = false;
-        private int baudRate = 115200;
         private string deviceType = "";
-        private string portName;
+        private string url;
 
         private ISmsDevice device;
         private string sendTo;
-        private string sendContent = "{device}({portName},{baudRate}),{time}";
+        private string sendContent = "{device}({url},{baudRate}),{time}";
         private CommandType commandType;
         private Dictionary<SmsDeviceStatus, string> statusDict;
         private string commandText;
 
         private async void BtnOpen_Click()
         {
-            if (string.IsNullOrEmpty(portName))
+            if (string.IsNullOrEmpty(url))
             {
                 modalAlert.Show("错误", $"请先选择串口!");
                 return;
@@ -38,13 +37,13 @@ namespace Quick.Sms.Web
 
             try
             {
-                modalLoading.Show("打开串口", $"正在打开串口[{portName}]...", true);
-                await OpenSerialPort(deviceType, portName, baudRate);
+                modalLoading.Show("打开串口", $"正在打开串口[{url}]...", true);
+                await OpenSerialPort(deviceType, url);
             }
             catch (Exception ex)
             {
                 CloseSerialPort();
-                modalAlert.Show("错误", $"串口[{portName}]打开失败，原因：{ex.Message}");
+                modalAlert.Show("错误", $"串口[{url}]打开失败，原因：{ex.Message}");
             }
             finally
             {
@@ -56,13 +55,13 @@ namespace Quick.Sms.Web
         {
             try
             {
-                if (string.IsNullOrEmpty(portName))
+                if (string.IsNullOrEmpty(url))
                 {
                     modalAlert.Show("错误", $"请先选择串口!");
                     return;
                 }
                 modalLoading.Show("智能识别中...", null, true);
-                var deviceTypeInfo = await Task.Run(() => AbstractSerialPortModem.Scan(portName, baudRate));
+                var deviceTypeInfo = await Task.Run(() => AbstractSerialPortModem.Scan(url));
                 deviceType = deviceTypeInfo.Id;
                 modalAlert.Show("成功", $"已成功识别为[{deviceTypeInfo.Name}]!");
             }
@@ -83,13 +82,12 @@ namespace Quick.Sms.Web
             logViewControl?.AddLine($"{DateTime.Now.ToString("HH:mm:ss.ffff")} {log}");
         }
 
-        private async Task OpenSerialPort(string deviceTypeId, string portName, int baudRate)
+        private async Task OpenSerialPort(string deviceTypeId, string url)
         {
             device = SmsDeviceManager.Instnce.CreateDeviceInstance(deviceTypeId,
                 new SerialPortModemSetting()
                 {
-                    PortName = portName,
-                    BaudRate = baudRate
+                    Url = url
                 });
             device.LineSended += (sender, line) => pushLog("TX " + line);
             device.LineRecved += (sender, line) => pushLog("RX " + line);
@@ -120,8 +118,7 @@ namespace Quick.Sms.Web
                 return;
             }
             var content = sendContent;
-            content = content.Replace("{portName}", portName);
-            content = content.Replace("{baudRate}", baudRate.ToString());
+            content = content.Replace("{url}", url);
             content = content.Replace("{device}", device.Name);
             content = content.Replace("{time}", DateTime.Now.ToString());
             content = content.Replace("{guid}", Guid.NewGuid().ToString("N"));

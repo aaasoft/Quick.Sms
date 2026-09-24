@@ -47,28 +47,17 @@ namespace Quick.Sms.Desktop.ViewModels
             }
         }
 
-        //串口
-        private string _PortName;
-        public string PortName
+        //URL
+        private string _Url;
+        public string Url
         {
-            get { return _PortName; }
+            get { return _Url; }
             set
             {
-                _PortName = value;
+                _Url = value;
                 RaisePropertyChanged();
                 OpenCommand.RaiseCanExecuteChanged();
                 ScanCommand.RaiseCanExecuteChanged();
-            }
-        }
-        //波特率
-        private int _BaudRate = 115200;
-        public int BaudRate
-        {
-            get { return _BaudRate; }
-            set
-            {
-                _BaudRate = value;
-                RaisePropertyChanged();
             }
         }
 
@@ -146,9 +135,9 @@ namespace Quick.Sms.Desktop.ViewModels
             PortNames = System.IO.Ports.SerialPort.GetPortNames();
             DeviceTypeInfos = SmsDeviceManager.Instnce.GetDeviceTypeInfos();
 
-            OpenCommand = new DelegateCommand() { ExecuteCommand = executeCommand_OpenCommand, CanExecuteCommand = t => !string.IsNullOrEmpty(PortName) };
+            OpenCommand = new DelegateCommand() { ExecuteCommand = executeCommand_OpenCommand, CanExecuteCommand = t => !string.IsNullOrEmpty(Url) };
             CloseCommand = new DelegateCommand() { ExecuteCommand = executeCommand_CloseCommand };
-            ScanCommand = new DelegateCommand() { ExecuteCommand = executeCommand_ScanCommand, CanExecuteCommand = t => !string.IsNullOrEmpty(PortName) };
+            ScanCommand = new DelegateCommand() { ExecuteCommand = executeCommand_ScanCommand, CanExecuteCommand = t => !string.IsNullOrEmpty(Url) };
             SendCommand = new DelegateCommand() { ExecuteCommand = executeCommand_SendCommand };
             RefreshAllStatusCommand = new DelegateCommand() { ExecuteCommand = executeCommand_RefreshAllStatusCommand };
             SendATCommand = new DelegateCommand() { ExecuteCommand = executeCommand_SendATCommand };
@@ -166,8 +155,7 @@ namespace Quick.Sms.Desktop.ViewModels
             device = SmsDeviceManager.Instnce.CreateDeviceInstance(DeviceType.Id,
                 new SerialPortModemSetting()
                 {
-                    PortName = PortName,
-                    BaudRate = BaudRate
+                    Url = Url
                 });
             device.LineSended += (sender, line) => pushLog("TX " + line);
             device.LineRecved += (sender, line) => pushLog("RX " + line);
@@ -190,7 +178,7 @@ namespace Quick.Sms.Desktop.ViewModels
 
         private async void executeCommand_OpenCommand(object e)
         {
-            if (string.IsNullOrEmpty(PortName))
+            if (string.IsNullOrEmpty(Url))
             {
                 MessageBox.Show("错误", $"请先选择串口!");
                 return;
@@ -203,14 +191,14 @@ namespace Quick.Sms.Desktop.ViewModels
 
             try
             {
-                MessageBox.Loading("打开串口", $"正在打开串口[{PortName}]...");
+                MessageBox.Loading("打开串口", $"正在打开串口[{Url}]...");
                 await OpenSerialPort();
                 MessageBox.Close();
             }
             catch (Exception ex)
             {
                 CloseSerialPort();
-                MessageBox.Show("错误", $"串口[{PortName}]打开失败，原因：{ex.Message}");
+                MessageBox.Show("错误", $"串口[{Url}]打开失败，原因：{ex.Message}");
             }
         }
 
@@ -223,13 +211,13 @@ namespace Quick.Sms.Desktop.ViewModels
         {
             try
             {
-                if (string.IsNullOrEmpty(PortName))
+                if (string.IsNullOrEmpty(Url))
                 {
                     MessageBox.Show("错误", $"请先选择串口!");
                     return;
                 }
                 MessageBox.Loading("智能识别", "正在识别中...");
-                var deviceTypeInfo = await Task.Run(() => AbstractSerialPortModem.Scan(PortName, BaudRate));
+                var deviceTypeInfo = await Task.Run(() => AbstractSerialPortModem.Scan(Url));
                 DeviceType = deviceTypeInfo;
                 MessageBox.Show("成功", $"已成功识别为[{deviceTypeInfo.Name}]!");
             }
@@ -253,8 +241,7 @@ namespace Quick.Sms.Desktop.ViewModels
                 return;
             }
             var content = SendContent;
-            content = content.Replace("{portName}", PortName);
-            content = content.Replace("{baudRate}", BaudRate.ToString());
+            content = content.Replace("{url}", Url);
             content = content.Replace("{device}", device.Name);
             content = content.Replace("{time}", DateTime.Now.ToString());
             content = content.Replace("{guid}", Guid.NewGuid().ToString("N"));

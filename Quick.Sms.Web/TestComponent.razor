@@ -13,40 +13,21 @@
                             <DataAnnotationsValidator />
                             <div class="input-group mb-1">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text">　串口</span>
+                                    <span class="input-group-text">Url</span>
                                 </div>
                                 @if (isOpen)
                                 {
-                                    <input type="text" class="form-control" readonly value="@portName" />
+                                    <input type="text" class="form-control" readonly value="@url" />
                                     <div class="input-group-append">
                                         <button type="button" class="btn btn-secondary" @onclick="CloseSerialPort">关闭</button>
                                     </div>
                                 }
                                 else
                                 {
-                                    <InputSelect @bind-Value="portName" class="form-control">
-                                        <option value="">请选择</option>
-                                        @foreach (var t in System.IO.Ports.SerialPort.GetPortNames())
-                                        {
-                                            <option value="@t">@t</option>
-                                        }
-                                    </InputSelect>
+                                    <InputText class="form-control"  @bind-Value="@url" />
                                     <div class="input-group-append">
                                         <button type="button" class="btn btn-secondary" @onclick="BtnOpen_Click">打开</button>
                                     </div>
-                                }
-                            </div>
-                            <div class="input-group mb-1">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">波特率</span>
-                                </div>
-                                @if (isOpen)
-                                {
-                                    <input type="text" class="form-control" readonly value="@baudRate" />
-                                }
-                                else
-                                {
-                                    <InputNumber class="form-control" @bind-Value="baudRate" />
                                 }
                             </div>
                             <div class="input-group">

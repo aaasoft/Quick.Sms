@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Quick.UrlClient;
 
 namespace Quick.Sms
 {
     public abstract class AbstractSerialPortModem : ISmsDevice
     {
-        private byte[] buffer = new byte[1 * 1024 * 1024];
         private Queue<string> readLinesQueue = new Queue<string>();
 
         public event EventHandler<string> LineSended;
@@ -38,12 +37,12 @@ namespace Quick.Sms
         /// 是否支持UCS2字符集
         /// </summary>
         public virtual bool SupportCharterSet_UCS2 { get; } = true;
-        
-        protected SerialPort SerialPort { get; set; }
+
+        protected IUrlClient UrlClient { get; set; }
 
         public Type SettingType => typeof(SerialPortModemSetting);
         protected SerialPortModemSetting Setting { get; private set; }
-        
+
         public virtual SmsDeviceFeature[] Features => new SmsDeviceFeature[]
         {
             new SmsDeviceFeature()
@@ -122,7 +121,7 @@ namespace Quick.Sms
                     return sb.ToString();
                 }
             };
-            Status_GCAP = new SmsDeviceStatus() { Name = "功能集", Read = () => ExecuteCommand("AT+GCAP", "+GCAP:") };            
+            Status_GCAP = new SmsDeviceStatus() { Name = "功能集", Read = () => ExecuteCommand("AT+GCAP", "+GCAP:") };
             Status_CREG_ZHCN = new SmsDeviceStatus()
             {
                 Name = "注册状态",
@@ -243,24 +242,11 @@ namespace Quick.Sms
 
         public virtual void Close()
         {
-            SerialPort?.Close();
-            SerialPort = null;
+            UrlClient?.Close();
+            UrlClient = null;
         }
 
-        public virtual SerialPort CreateSerialPort()
-        {
-            return new SerialPort()
-            {
-                PortName = Setting.PortName,
-                BaudRate = Setting.BaudRate,
-                Parity = Parity.None,
-                DataBits = 8,
-                StopBits = StopBits.One,
-                Handshake = Handshake.None,
-                ReadTimeout = Setting.ReadResponseTimeout,
-                WriteTimeout = Setting.WriteCommandTimeout
-            };
-        }
+        public virtual IUrlClient CreateUrlClient() => UrlClientFactory.Build(Setting.Url);
 
         protected void ClearBuffer()
         {
@@ -307,24 +293,16 @@ namespace Quick.Sms
 
         public virtual void Init(object settingObj)
         {
-            if (SerialPort != null)
+            if (UrlClient != null)
                 Close();
             Setting = (SerialPortModemSetting)settingObj;
-            SerialPort = CreateSerialPort();
+            UrlClient = CreateUrlClient();
         }
-        
+
         public virtual void Open()
         {
-            SerialPort.Open();
-            beginReadFromSerialPort();
-            while (true)
-            {
-                Thread.Sleep(100);
-                if (SerialPort.BytesToRead > 0)
-                    SerialPort.Read(buffer, 0, SerialPort.BytesToRead);
-                else
-                    break;
-            }
+            UrlClient.Open();
+            _ = beginReadFromUrlClient();
             ClearBuffer();
             //确保短信猫工作
             InitModem();
@@ -342,46 +320,44 @@ namespace Quick.Sms
             }
         }
 
-        private void beginReadFromSerialPort()
+        private async Task beginReadFromUrlClient()
         {
-            Task.Delay(100).ContinueWith(t =>
+            var buffer = new byte[100 * 1024];
+            while (true)
             {
-                var serialPort = SerialPort;
-                if (serialPort == null || !serialPort.IsOpen)
+                await Task.Delay(100);
+                var urlClient = UrlClient;
+                if (urlClient == null)
                     return;
-                beginReadFromSerialPort();
-                var readCount = serialPort.BytesToRead;
-                if (readCount <= 0)
-                    return;
+                var stream = urlClient.GetStream();
                 string[] lines = null;
-                lock (this)
+                
+                try
                 {
-                    try
-                    {
-                        int ret = 0;
-                        string text = null;
+                    int ret = 0;
+                    string text = null;
 
-                        while (true)
-                        {
-                            readCount = serialPort.BytesToRead;
-                            if (readCount <= 0)
-                                break;
-                            ret += serialPort.Read(buffer, ret, buffer.Length - ret);
-                            text = Encoding.ASCII.GetString(buffer, 0, ret);
-                            if (text.EndsWith(ReadNewLine))
-                                break;
-                            Thread.Sleep(100);
-                        }
-                        if (text == null)
-                            return;
-                        lines = text.Split(new string[] { ReadNewLine }, StringSplitOptions.RemoveEmptyEntries);
+                    while (true)
+                    {
+                        var readCount = await stream.ReadAsync(buffer, ret, buffer.Length - ret);
+                        if (readCount <= 0)
+                            break;
+                        ret += readCount;
+                        text = Encoding.ASCII.GetString(buffer, 0, ret);
+                        if (text.EndsWith(ReadNewLine))
+                            break;
+                        await Task.Delay(100);
                     }
-                    catch { }
+                    if (text == null)
+                        return;
+                    lines = text.Split([ReadNewLine], StringSplitOptions.RemoveEmptyEntries);
                 }
+                catch { }
+
                 if (lines == null)
                     return;
                 addReadLines(lines);
-            });
+            }
         }
         public string ReadLine()
         {
@@ -495,7 +471,7 @@ namespace Quick.Sms
             if (text.EndsWith(WriteNewLine))
                 text = text.Substring(0, text.Length - WriteNewLine.Length);
             LineSended?.Invoke(this, text);
-            SerialPort.Write(bytesToWrite, 0, bytesToWrite.Length);
+            UrlClient.GetStream().Write(bytesToWrite, 0, bytesToWrite.Length);
         }
 
         /// <summary>
@@ -583,12 +559,12 @@ namespace Quick.Sms
         /// </summary>
         protected virtual string[] DeviceMarks => null;
 
-        public static SmsDeviceTypeInfo Scan(string portName,int baudRate)
+        public static SmsDeviceTypeInfo Scan(string url)
         {
             var testModem = new PrivateModem();
             try
             {
-                testModem.Init(new SerialPortModemSetting() { PortName = portName, BaudRate = baudRate });
+                testModem.Init(new SerialPortModemSetting() { Url = url });
                 testModem.Open();
                 return Scan(testModem);
             }
@@ -661,7 +637,7 @@ namespace Quick.Sms
         {
             public override string Name => throw new NotImplementedException();
 
-            public override ISmsDevice CreateNewInstance()=>new PrivateModem();
+            public override ISmsDevice CreateNewInstance() => new PrivateModem();
 
             protected override void InternalSend(string sendTo, string content)
             {

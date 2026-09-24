@@ -45,21 +45,12 @@
 							<StackPanel Orientation="Vertical">
 								<Border Classes="row">
 									<Grid ColumnDefinitions="Auto,*,Auto">
-										<Label Grid.Column="0" Classes="Large">串口</Label>
-										<ComboBox Grid.Column="1" HorizontalAlignment="Stretch"
+										<Label Grid.Column="0" Classes="Large">URL</Label>
+										<TextBox Grid.Column="1" HorizontalAlignment="Stretch"
 												  IsEnabled="{Binding IsOpen,Converter={StaticResource booleanReverseConverter}}"
-												  ItemsSource="{Binding PortNames}"
-												  SelectedItem="{Binding PortName}"></ComboBox>
+												  Text="{Binding Url}"></TextBox>
 										<Button Grid.Column="2" Classes="Tertiary" Command="{Binding OpenCommand}" IsVisible="{Binding IsOpen,Converter={StaticResource booleanReverseConverter}}">打开</Button>
 										<Button Grid.Column="2" Classes="Tertiary" Command="{Binding CloseCommand}" IsVisible="{Binding IsOpen}">关闭</Button>
-									</Grid>
-								</Border>
-								<Border Classes="row">
-									<Grid ColumnDefinitions="Auto,*,Auto">
-										<Label Grid.Column="0" Classes="Large">波特率</Label>
-										<NumericUpDown Grid.Column="1" Minimum="0" FormatString="0"
-											IsEnabled="{Binding IsOpen,Converter={StaticResource booleanReverseConverter}}"
-											Value="{Binding BaudRate}"></NumericUpDown>
 									</Grid>
 								</Border>
 								<Border Classes="row">
