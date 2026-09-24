@@ -5,7 +5,7 @@
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-		<ApplicationIcon>../../resource/Logo.ico</ApplicationIcon>
+		<ApplicationIcon>../resource/Logo.ico</ApplicationIcon>
 		<Version>2026.2.520</Version>
 		<Title>短信工具</Title>
 		<Product>短信工具</Product>
@@ -29,6 +29,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <AvaloniaResource Include="..\..\resource\Logo.ico" Link="Logo.ico" />
+	  <AvaloniaResource Include="..\resource\Logo.ico" Link="Logo.ico" />
 	</ItemGroup>
 </Project>
