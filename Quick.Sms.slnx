@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Quick.Sms.CMCC.CloudMAS/Quick.Sms.CMCC.CloudMAS.csproj" />
+  <Project Path="Quick.Sms.Desktop/Quick.Sms.Desktop.csproj" />
+  <Project Path="Quick.Sms.Web/Quick.Sms.Web.csproj" />
+  <Project Path="Quick.Sms/Quick.Sms.csproj" />
+  <Project Path="_build/_build.csproj" />
+</Solution>
