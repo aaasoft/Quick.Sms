@@ -26,6 +26,7 @@ namespace Quick.Sms.Desktop.ViewModels
         public Queue<string> LogQueue { get; set; } = new Queue<string>();
         public string Logs => string.Join(Environment.NewLine, LogQueue);
 
+        public DelegateCommand HelpCommand { get; set; }
         public DelegateCommand OpenCommand { get; set; }
         public DelegateCommand CloseCommand { get; set; }
         public DelegateCommand ScanCommand { get; set; }
@@ -86,7 +87,7 @@ namespace Quick.Sms.Desktop.ViewModels
                 RaisePropertyChanged();
             }
         }
-        private string _SendContent = "{device}({portName},{baudRate}),{time}";
+        private string _SendContent = "{device},{time}";
         /// <summary>
         /// 发送内容
         /// </summary>
@@ -134,7 +135,7 @@ namespace Quick.Sms.Desktop.ViewModels
             Title = $"{assembly.GetCustomAttribute<AssemblyProductAttribute>().Product} v{assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion}";
             PortNames = System.IO.Ports.SerialPort.GetPortNames();
             DeviceTypeInfos = SmsDeviceManager.Instnce.GetDeviceTypeInfos();
-
+            HelpCommand = new DelegateCommand() { ExecuteCommand = executeCommand_HelpCommand };
             OpenCommand = new DelegateCommand() { ExecuteCommand = executeCommand_OpenCommand, CanExecuteCommand = t => !string.IsNullOrEmpty(Url) };
             CloseCommand = new DelegateCommand() { ExecuteCommand = executeCommand_CloseCommand };
             ScanCommand = new DelegateCommand() { ExecuteCommand = executeCommand_ScanCommand, CanExecuteCommand = t => !string.IsNullOrEmpty(Url) };
@@ -174,6 +175,18 @@ namespace Quick.Sms.Desktop.ViewModels
             try { device?.Close(); } catch { }
             IsOpen = false;
             LogQueue.Clear();
+        }
+
+        private async void executeCommand_HelpCommand(object e)
+        {
+            MessageBox.Show("帮助", @"串口示例：
+Windows:
+serial://./COM1?BaudRate=115200
+Linux:
+serial://./dev/ttyS1?BaudRate=115200
+
+TCP示例：
+tcp://192.168.1.123:3001");
         }
 
         private async void executeCommand_OpenCommand(object e)

@@ -45,7 +45,7 @@
 							<StackPanel Orientation="Vertical">
 								<Border Classes="row">
 									<Grid ColumnDefinitions="Auto,*,Auto">
-										<Label Grid.Column="0" Classes="Large">URL</Label>
+										<Button Grid.Column="0" Classes="Tertiary" Command="{Binding HelpCommand}">URL</Button>
 										<TextBox Grid.Column="1" HorizontalAlignment="Stretch"
 												  IsEnabled="{Binding IsOpen,Converter={StaticResource booleanReverseConverter}}"
 												  Text="{Binding Url}"></TextBox>
