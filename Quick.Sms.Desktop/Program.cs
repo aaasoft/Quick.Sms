@@ -17,11 +17,8 @@ class Program
     {
         var appBuilder = AppBuilder.Configure<App>()
             .UsePlatformDetect()
+            .WithInterFont()
             .LogToTrace();
-        if (OperatingSystem.IsLinux())
-        {
-            appBuilder = appBuilder.WithFont_SourceHanSansCN();
-        }
         return appBuilder;
     }
 }
