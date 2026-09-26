@@ -6,7 +6,6 @@
 		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<ApplicationIcon>../resource/Logo.ico</ApplicationIcon>
-		<Version>2026.2.520</Version>
 		<Title>短信工具</Title>
 		<Product>短信工具</Product>
 		<PublishAot>true</PublishAot>
