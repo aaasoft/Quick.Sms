@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using Avalonia.Media;
 using Quick.Sms.Desktop.Controls;
 
 namespace Quick.Sms.Desktop.ViewModels
@@ -21,7 +17,6 @@ namespace Quick.Sms.Desktop.ViewModels
         };
 
         public string Title { get; set; }
-        public string[] PortNames { get; set; }
         public SmsDeviceTypeInfo[] DeviceTypeInfos { get; set; }
         public Queue<string> LogQueue { get; set; } = new Queue<string>();
         public string Logs => string.Join(Environment.NewLine, LogQueue);
@@ -49,7 +44,7 @@ namespace Quick.Sms.Desktop.ViewModels
         }
 
         //URL
-        private string _Url;
+        private string _Url = "serial://./COM1?BaudRate=115200";
         public string Url
         {
             get { return _Url; }
@@ -133,7 +128,6 @@ namespace Quick.Sms.Desktop.ViewModels
         {
             Assembly assembly = GetType().Assembly;
             Title = $"{assembly.GetCustomAttribute<AssemblyProductAttribute>().Product} v{assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion}";
-            PortNames = System.IO.Ports.SerialPort.GetPortNames();
             DeviceTypeInfos = SmsDeviceManager.Instnce.GetDeviceTypeInfos();
             HelpCommand = new DelegateCommand() { ExecuteCommand = executeCommand_HelpCommand };
             OpenCommand = new DelegateCommand() { ExecuteCommand = executeCommand_OpenCommand, CanExecuteCommand = t => !string.IsNullOrEmpty(Url) };
