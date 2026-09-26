@@ -1,0 +1,371 @@
+name: Release Quick.Sms.Desktop
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v2026.926.0)'
+        required: true
+        type: string
+
+env:
+  PROJECT_PATH: Quick.Sms.Desktop/Quick.Sms.Desktop.csproj
+  DOTNET_VERSION: '10.0.x'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            rid: win-x64
+            archive: zip
+          - os: windows-latest
+            rid: win-x86
+            archive: zip
+          - os: windows-latest
+            rid: win-arm64
+            archive: zip
+          - os: ubuntu-latest
+            rid: linux-x64
+            archive: deb
+            deb_arch: amd64
+          - os: ubuntu-latest
+            rid: linux-arm64
+            archive: deb
+            deb_arch: arm64
+          - os: macos-latest
+            rid: osx-x64
+            archive: dmg
+          - os: macos-latest
+            rid: osx-arm64
+            archive: dmg
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install cross-compilation tools (linux-arm64)
+        if: matrix.rid == 'linux-arm64'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang lld gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
+          # Replace default objcopy with cross-version so .NET Native AOT can process ARM64 binaries
+          sudo update-alternatives --install /usr/bin/objcopy objcopy /usr/bin/aarch64-linux-gnu-objcopy 100
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Extract version from tag
+        id: version
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          else
+            TAG="${{ github.ref_name }}"
+          fi
+          VERSION="${TAG#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Release version: $VERSION (tag: $TAG)"
+
+      - name: Publish
+        run: >
+          dotnet publish ${{ env.PROJECT_PATH }}
+          -c Release
+          -r ${{ matrix.rid }}
+          -p:Version=${{ steps.version.outputs.version }}
+          -p:DebugType=none
+          -o publish/${{ matrix.rid }}
+
+      - name: Remove PDB files
+        shell: bash
+        run: find publish/${{ matrix.rid }} -name '*.pdb' -delete
+
+      - name: Prepare deb payload (Linux)
+        if: startsWith(matrix.rid, 'linux-')
+        shell: bash
+        run: |
+          RID="${{ matrix.rid }}"
+          STAGE="debstage"
+          APP_DIR="${STAGE}/opt/quick-sms-desktop"
+          # 复制 self-contained 发布产物到 /opt/quick-sms-desktop
+          mkdir -p "${APP_DIR}"
+          cp -a "publish/${RID}/." "${APP_DIR}/"
+          chmod +x "${APP_DIR}/Quick.Sms.Desktop"
+          # 命令行启动器：/usr/bin/quick-sms-desktop -> /opt/quick-sms-desktop/Quick.Sms.Desktop
+          mkdir -p "${STAGE}/usr/bin"
+          ln -s "/opt/quick-sms-desktop/Quick.Sms.Desktop" "${STAGE}/usr/bin/quick-sms-desktop"
+          # 图标（hicolor 主题，512x512 原生尺寸，256x256 复制一份供缩放）
+          mkdir -p "${STAGE}/usr/share/icons/hicolor/256x256/apps" "${STAGE}/usr/share/icons/hicolor/512x512/apps"
+          cp "resource/Logo.png" "${STAGE}/usr/share/icons/hicolor/256x256/apps/quick-sms-desktop.png"
+          cp "resource/Logo.png" "${STAGE}/usr/share/icons/hicolor/512x512/apps/quick-sms-desktop.png"
+          # .desktop 启动器（系统安装路径，绝对 Exec）
+          mkdir -p "${STAGE}/usr/share/applications"
+          cat > "${STAGE}/usr/share/applications/Quick.Sms.Desktop.desktop" <<'DESKTOP'
+          [Desktop Entry]
+          Type=Application
+          Name=Quick.Sms.Desktop
+          Name[zh_CN]=QuickSMS客户端
+          Comment=Quick SMS client
+          Comment[zh_CN]=QuickSMS客户端
+          Exec=/opt/quick-sms-desktop/Quick.Sms.Desktop
+          Icon=quick-sms-desktop
+          Terminal=false
+          Categories=Network;
+          StartupWMClass=Quick.Sms.Desktop
+          StartupNotify=true
+          DESKTOP
+          # 控制信息 + 安装后刷新桌面数据库/图标缓存
+          mkdir -p "${STAGE}/DEBIAN"
+          # 安装内容占用大小（KB，dpkg 的 Installed-Size 单位是 KiB），供软件中心"大小"一栏显示
+          INSTALLED_SIZE_KB=$(du -sk --apparent-size "${STAGE}/opt" "${STAGE}/usr" | awk '{sum+=$1} END {print sum}')
+          cat > "${STAGE}/DEBIAN/control" <<'CONTROL'
+          Package: quick-sms-desktop
+          Version: ${{ steps.version.outputs.version }}
+          Section: net
+          Priority: optional
+          Architecture: ${{ matrix.deb_arch }}
+          Maintainer: 张鹏 <scbeta@qq.com>
+          Description: Quick SMS client
+          CONTROL
+          # Installed-Size 由脚本计算，追加在 control 末尾（quoted heredoc 内变量不展开）
+          echo "Installed-Size: ${INSTALLED_SIZE_KB}" >> "${STAGE}/DEBIAN/control"
+          cat > "${STAGE}/DEBIAN/postinst" <<'POSTINST'
+          #!/bin/sh
+          set -e
+          if command -v update-desktop-database >/dev/null 2>&1; then
+            update-desktop-database /usr/share/applications || true
+          fi
+          if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+            gtk-update-icon-cache -f -t /usr/share/icons/hicolor || true
+          fi
+          POSTINST
+          chmod 0755 "${STAGE}/DEBIAN/postinst"
+          cat > "${STAGE}/DEBIAN/postrm" <<'POSTRM'
+          #!/bin/sh
+          set -e
+          if command -v update-desktop-database >/dev/null 2>&1; then
+            update-desktop-database /usr/share/applications || true
+          fi
+          if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+            gtk-update-icon-cache -f -t /usr/share/icons/hicolor || true
+          fi
+          POSTRM
+          chmod 0755 "${STAGE}/DEBIAN/postrm"
+
+      - name: Package (zip)
+        if: matrix.archive == 'zip'
+        shell: pwsh
+        run: |
+          Compress-Archive -Path publish/${{ matrix.rid }}/* -DestinationPath Quick.Sms.Desktop-${{ steps.version.outputs.tag }}-${{ matrix.rid }}.zip
+
+      - name: Assemble .app bundle (macOS)
+        if: startsWith(matrix.rid, 'osx-')
+        run: |
+          APP_DIR="Quick.Sms.Desktop.app"
+          mkdir -p "${APP_DIR}/Contents/MacOS" "${APP_DIR}/Contents/Resources"
+          shopt -s dotglob
+          mv publish/${{ matrix.rid }}/* "${APP_DIR}/Contents/MacOS/"
+          shopt -u dotglob
+
+          # 使用仓库自带 resource/Logo.png 生成 macOS 图标 .icns（失败则退化为无自定义图标）
+          mkdir -p AppIcon.iconset
+          cp "resource/Logo.png" "AppIcon.iconset/icon_512x512.png"
+          for s in 512 256 128 32 16; do
+            sips -z "$s" "$s" "AppIcon.iconset/icon_512x512.png" \
+              --out "AppIcon.iconset/icon_${s}x${s}.png" || true
+          done
+          iconutil --convert icns -o AppIcon.icns AppIcon.iconset || true
+          if [ -f AppIcon.icns ]; then
+            mv AppIcon.icns "${APP_DIR}/Contents/Resources/"
+          fi
+
+          # 写 Info.plist（CFBundleExecutable 必须与可执行文件名一致）
+          cat > "${APP_DIR}/Contents/Info.plist" <<'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>CFBundleName</key>
+              <string>Quick.Sms.Desktop</string>
+              <key>CFBundleDisplayName</key>
+              <string>Quick.Sms.Desktop</string>
+              <key>LSHasLocalizedDisplayName</key>
+              <true/>
+              <key>CFBundleExecutable</key>
+              <string>Quick.Sms.Desktop</string>
+              <key>CFBundleIdentifier</key>
+              <string>com.github.aaasoft.quick-sms-client</string>
+              <key>CFBundleVersion</key>
+              <string>${{ steps.version.outputs.version }}</string>
+              <key>CFBundleShortVersionString</key>
+              <string>${{ steps.version.outputs.version }}</string>
+              <key>CFBundlePackageType</key>
+              <string>APPL</string>
+              <key>CFBundleInfoDictionaryVersion</key>
+              <string>6.0</string>
+              <key>CFBundleIconFile</key>
+              <string>AppIcon.icns</string>
+              <key>CFBundleDevelopmentRegion</key>
+              <string>en</string>
+              <key>CFBundleLocalizations</key>
+              <array>
+                  <string>en</string>
+                  <string>zh-Hans</string>
+              </array>
+              <key>LSMinimumSystemVersion</key>
+              <string>12.0</string>
+              <key>NSHighResolutionCapable</key>
+              <true/>
+          </dict>
+          </plist>
+          PLIST
+
+          # 中文系统显示名：QuickSMS客户端（仅中文 macOS 生效，其它语言回退到 CFBundleDisplayName）
+          mkdir -p "${APP_DIR}/Contents/Resources/zh-Hans.lproj"
+          printf '"CFBundleDisplayName" = "QuickSMS客户端";\n"CFBundleName" = "QuickSMS客户端";\n' \
+            > "${APP_DIR}/Contents/Resources/zh-Hans.lproj/InfoPlist.strings"
+
+      - name: Build styled dmg (macOS)
+        if: startsWith(matrix.rid, 'osx-')
+        run: |
+          set -e
+          APP_NAME="Quick.Sms.Desktop"
+          VOL_NAME="${APP_NAME}"
+          DMG_STAGE="dmgstage"
+          DMG_TEMP="${APP_NAME}-temp.dmg"
+          DMG_FINAL="Quick.Sms.Desktop-${{ steps.version.outputs.tag }}-${{ matrix.rid }}.dmg"
+          rm -rf "${DMG_STAGE}" "${DMG_TEMP}" "${DMG_FINAL}"
+          mkdir -p "${DMG_STAGE}/.background"
+          # .app 放入 dmg 根
+          cp -a "Quick.Sms.Desktop.app" "${DMG_STAGE}/"
+
+          # 用 Swift/AppKit 画一张背景图（自包含，无需第三方依赖）：品牌渐变 + 标题 + 拖拽箭头
+          # 注意：直接在 NSBitmapImageRep 上取 cgContext 绘制，避免 lockFocus 在 macOS26 上
+          # 产生 NSCGImageSnapshotRep 导致 as! NSBitmapImageRep 强转崩溃。
+          swift - <<'SWIFT'
+          import AppKit
+          let w = 660, h = 400
+          let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: w, pixelsHigh: h,
+                                     bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true,
+                                     isPlanar: false, colorSpaceName: .deviceRGB,
+                                     bytesPerRow: 0, bitsPerPixel: 0)!
+          let gctx = NSGraphicsContext(bitmapImageRep: rep)!
+          let ctx = gctx.cgContext
+          let colors = [NSColor(srgbRed: 0.97, green: 0.98, blue: 0.99, alpha: 1.0).cgColor,
+                        NSColor(srgbRed: 0.87, green: 0.91, blue: 0.96, alpha: 1.0).cgColor]
+          let grad = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(),
+                                colors: colors as CFArray, locations: [0, 1])!
+          ctx.drawLinearGradient(grad, start: CGPoint(x: 0, y: h), end: CGPoint(x: 0, y: 0), options: [])
+          // 文字绘制需要把 bitmap 的 context 设为 current
+          NSGraphicsContext.saveGraphicsState()
+          NSGraphicsContext.current = gctx
+          let titleAttrs: [NSAttributedString.Key: Any] = [
+            .font: NSFont.systemFont(ofSize: 28, weight: .semibold),
+            .foregroundColor: NSColor(srgbRed: 0.10, green: 0.17, blue: 0.25, alpha: 1.0)
+          ]
+          let title = "QuickSMS客户端"
+          let tsize = (title as NSString).size(withAttributes: titleAttrs)
+          (title as NSString).draw(at: NSPoint(x: (CGFloat(w) - tsize.width) / 2, y: CGFloat(h) - 72),
+                                   withAttributes: titleAttrs)
+          NSGraphicsContext.restoreGraphicsState()
+          // 拖拽箭头
+          ctx.setStrokeColor(NSColor(srgbRed: 0.10, green: 0.17, blue: 0.25, alpha: 1.0).cgColor)
+          ctx.setLineWidth(3)
+          ctx.move(to: CGPoint(x: 250, y: 190)); ctx.addLine(to: CGPoint(x: 410, y: 190))
+          ctx.move(to: CGPoint(x: 400, y: 180)); ctx.addLine(to: CGPoint(x: 410, y: 190))
+          ctx.move(to: CGPoint(x: 400, y: 200)); ctx.addLine(to: CGPoint(x: 410, y: 190))
+          ctx.strokePath()
+          let data = rep.representation(using: .png, properties: [:])!
+          try! data.write(to: URL(fileURLWithPath: "dmgstage/.background/background.png"))
+          SWIFT
+
+          # 先建可写 dmg，挂载后用 Finder AppleScript 设定窗口布局/背景/图标定位，再压成只读 dmg
+          hdiutil create -volname "${VOL_NAME}" -srcfolder "${DMG_STAGE}" -ov -format UDRW "${DMG_TEMP}"
+          MOUNT=$(hdiutil attach -nobrowse -noautoopen "${DMG_TEMP}" | tail -n1 | awk '{print $NF}')
+          osascript <<EOF
+            tell application "Finder"
+              tell disk "${VOL_NAME}"
+                open
+                set current view of container window to icon view
+                set toolbar visible of container window to false
+                set statusbar visible of container window to false
+                set the bounds of container window to {400, 200, 1060, 600}
+                set theViewOptions to the icon view options of container window
+                set icon size of theViewOptions to 128
+                set arrangement of theViewOptions to not arranged
+                set background picture of theViewOptions to file ".background:background.png"
+                make new alias file at container window to POSIX file "/Applications" with properties {name: "Applications"}
+                set position of item "${APP_NAME}.app" of container window to {180, 230}
+                set position of item "Applications" of container window to {480, 230}
+                close
+                open
+                update without registering applications
+                delay 3
+              end tell
+            end tell
+          EOF
+          hdiutil detach "${MOUNT}" -force
+          hdiutil convert "${DMG_TEMP}" -format UDZO -o "${DMG_FINAL}"
+          rm -rf "${DMG_STAGE}" "${DMG_TEMP}"
+
+      - name: Build deb (Linux)
+        if: startsWith(matrix.rid, 'linux-')
+        shell: bash
+        run: dpkg-deb --build --root-owner-group debstage "Quick.Sms.Desktop-${{ steps.version.outputs.tag }}-${{ matrix.rid }}.deb"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-${{ matrix.rid }}
+          path: Quick.Sms.Desktop-${{ steps.version.outputs.tag }}-${{ matrix.rid }}.*
+          retention-days: 1
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          else
+            TAG="${{ github.ref_name }}"
+          fi
+          VERSION="${TAG#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: packages
+          merge-multiple: true
+
+      - name: List release files
+        run: ls -lhR packages/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Quick.Sms.Desktop ${{ steps.version.outputs.tag }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          files: packages/*
