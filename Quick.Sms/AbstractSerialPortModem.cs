@@ -350,7 +350,7 @@ namespace Quick.Sms
                     }
                     if (text == null)
                         return;
-                    lines = text.Split([ReadNewLine], StringSplitOptions.RemoveEmptyEntries);
+                    lines = text.Split(new string[] { ReadNewLine }, StringSplitOptions.RemoveEmptyEntries);
                 }
                 catch { }
 

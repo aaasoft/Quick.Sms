@@ -9,7 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Quick.Blazor.Bootstrap.Admin" Version="2026.19.514" />
+		<PackageReference Include="Quick.Blazor.Bootstrap.Admin" Version="2026.31.813" />
 		<PackageReference Include="YiQiDong.Agent" Version="2.2.18" />
 	</ItemGroup>
 

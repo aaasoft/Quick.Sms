@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <PackageProjectUrl>https://github.com/aaasoft/Quick.Sms</PackageProjectUrl>
     <PackageIcon>Logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/aaasoft/Quick.Sms</RepositoryUrl>
@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Quick.UrlClient.SerialPort" Version="2026.3.424" />
-    <PackageReference Include="Quick.UrlClient.Tcp" Version="2026.3.424" />
+    <PackageReference Include="Quick.UrlClient.SerialPort" Version="2026.926.0" />
+    <PackageReference Include="Quick.UrlClient.Tcp" Version="2026.926.0" />
   </ItemGroup>
 
 </Project>
